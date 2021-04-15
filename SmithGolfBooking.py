@@ -18,22 +18,24 @@ timeToRun = "05:00"
 def sendSms(body):
     account_sid = config['Twilio']['accountSid']
     auth_token = config['Twilio']['authToken']
+    to_numbers = config['Twilio']['toNumbers'].split(',')
     
     client = Client(account_sid, auth_token) 
     
     maxBodyChars = 1500
     messageBodies = [body[i: i + maxBodyChars] for i in range(0, len(body), maxBodyChars)]
 
-    for messageBody in messageBodies:
-        message = client.messages.create( 
-                                from_=config['Twilio']['fromNumber'],
-                                body=messageBody,      
-                                to=config['Twilio']['toNumber']
-                                )
-        
-        print("Sent SMS at " + datetime.now().strftime("%m/%d/%Y, %H:%M:%S") + "\t Message:" + message.sid)
+    for to_number in to_numbers:
+        for messageBody in messageBodies:
+            message = client.messages.create( 
+                                    from_=config['Twilio']['fromNumber'],
+                                    body=messageBody,      
+                                    to=to_number
+                                    )
+            
+            print("Sent SMS at " + datetime.now().strftime("%m/%d/%Y, %H:%M:%S") + "\t Message:" + message.sid)
 
-def GetSmithTeeTimes():
+def GetSmithTeeTimes():    
     options = Options()
     # options.headless = True
     driver = webdriver.Chrome(options=options)
@@ -48,22 +50,22 @@ def GetSmithTeeTimes():
     dayInAWeekString = dayInAWeek.strftime('%m/%d/%Y')
     isNextMonth = today.month != dayInAWeek.month
 
-    driver.get_screenshot_as_file('.\screenshots\smithgolf_mainpage_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
+    driver.get_screenshot_as_file('screenshots/smithgolf_mainpage_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
 
     # Login
     driver.find_element_by_xpath("//a[@class='login-link popup-link']").click()
-    driver.get_screenshot_as_file('.\screenshots\smithgolf_LoginEmpty_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
+    driver.get_screenshot_as_file('screenshots/smithgolf_LoginEmpty_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
     driver.find_element_by_id("weblogin_username").clear()
     driver.find_element_by_id("weblogin_username").send_keys(config['SmithSite']['username'])
     driver.find_element_by_id("weblogin_password").clear()
     driver.find_element_by_id("weblogin_password").send_keys(config['SmithSite']['password'])
-    driver.get_screenshot_as_file('.\screenshots\smithgolf_LoginFilled_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
+    driver.get_screenshot_as_file('screenshots/smithgolf_LoginFilled_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
     driver.find_element_by_xpath("//input[@id='weblogin_buttonlogin']").click()
 
     # Homepage - Navigate to Golf
-    driver.get_screenshot_as_file('.\screenshots\smithgolf_HomePageLoggedIn_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
+    driver.get_screenshot_as_file('screenshots/smithgolf_HomePageLoggedIn_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
     driver.get(config['SmithSite']['golfUrl'])
-    driver.get_screenshot_as_file('.\screenshots\smithgolf_LoggedInGolfTeeTimes_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
+    driver.get_screenshot_as_file('screenshots/smithgolf_LoggedInGolfTeeTimes_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
 
     # TeeTime settings
     courseDropdownXPath = "//select[@name='secondarycode']/option[text()='H. Smith Richardson Golf Course']"
@@ -88,7 +90,7 @@ def GetSmithTeeTimes():
     driver.find_element_by_xpath(beginDateInputXPath).click()
     driver.find_element_by_xpath(searchTeeTimesButton).click()
 
-    driver.get_screenshot_as_file('.\screenshots\smithgolf_teetimes_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
+    driver.get_screenshot_as_file('screenshots/smithgolf_teetimes_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
 
     # Getting all available TeeTimes
     teeTimeRows = driver.find_element_by_xpath(searchTeeTimesTable).find_elements_by_css_selector('tr')
@@ -105,24 +107,25 @@ def GetSmithTeeTimes():
     for teeTime in preferredTeeTimesInOrder:
         if (teeTime in teeTimesDict) and (teeTimesDict[teeTime]['IsAddToCartAvailable'] == 'True') and (teeTimesDict[teeTime]['Holes'] == '18 (Front)') and (teeTimesDict[teeTime]['Course'] == 'H. Smith Richardson Golf Course') and (teeTimesDict[teeTime]['OpenSlots'] == '4'):
             addToCartElements[int(teeTimesDict[teeTime]['AddToCartIndex'])].click()
-            driver.get_screenshot_as_file('.\screenshots\smithgolf_personalinfo_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
+            driver.get_screenshot_as_file('screenshots/smithgolf_personalinfo_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
             driver.find_element_by_id('golfmemberselection_buttononeclicktofinish').click()
 
             # Successfully booked Tee Time
             try:
                 time.sleep(5)
-                driver.get_screenshot_as_file('.\screenshots\smithgolf_submitted_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
+                driver.get_screenshot_as_file('screenshots/smithgolf_submitted_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
                 driver.find_element_by_id('webconfirmation_pageheader')
-                successMessage = "At {} on {} - booked {} teetime on {} at {} for {} people.".format(timeToRun, today.strftime('%m/%d/%Y'), teeTime, teeTimesDict[teeTime]['Date'], teeTimesDict[teeTime]['Course'], teeTimesDict[teeTime]['OpenSlots'])
+                successMessage = "{} {} - booked {} teetime on {} at {} for {} people.".format(today.strftime('%m/%d/%Y'), datetime.now().strftime("%H:%M:%S"), teeTime, teeTimesDict[teeTime]['Date'], teeTimesDict[teeTime]['Course'], teeTimesDict[teeTime]['OpenSlots'])
                 print(successMessage)
                 sendSms(successMessage)
                 break
             # Failed to book Tee Time, retrying with next preferred time
             except:
-                driver.get_screenshot_as_file('.\screenshots\smithgolf_failed_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
-                failMessage = "At {} on {} - FAILED to book {} teetime on {} at {} for {} people. Retrying...".format(timeToRun, today.strftime('%m/%d/%Y'), teeTime, teeTimesDict[teeTime]['Date'], teeTimesDict[teeTime]['Course'], teeTimesDict[teeTime]['OpenSlots'])
+                driver.get_screenshot_as_file('screenshots/smithgolf_failed_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
+                failMessage = "{} {} - FAILED to book {} teetime on {} at {} for {} people. Trying next preferred teetime...".format(today.strftime('%m/%d/%Y'), datetime.now().strftime("%H:%M:%S"), teeTime, teeTimesDict[teeTime]['Date'], teeTimesDict[teeTime]['Course'], teeTimesDict[teeTime]['OpenSlots'])
                 print(failMessage)
-                sendSms(successMessage)
+                sendSms(failMessage)
+                driver.back()
     
     print("\nQuitting...")
     driver.quit()
