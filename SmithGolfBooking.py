@@ -33,9 +33,9 @@ def sendSms(body):
                                     to=to_number
                                     )
             
-            print("Sent SMS at " + datetime.now().strftime("%m/%d/%Y, %H:%M:%S") + "\t Message:" + message.sid)
+            print("Sent SMS at {} - To: {}\tSID: {}".format(datetime.now().strftime("%H:%M:%S on %m/%d/%Y"), str(message.to), message.sid))
 
-def GetSmithTeeTimes():    
+def GetSmithTeeTimes():
     options = Options()
     # options.headless = True
     driver = webdriver.Chrome(options=options)
