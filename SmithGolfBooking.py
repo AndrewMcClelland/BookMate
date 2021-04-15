@@ -15,10 +15,10 @@ config = configparser.ConfigParser()
 config.read("config.ini")
 timeToRun = "05:00"
 
-def sendSms(body):
+def sendSms(body, sendToMeOnly = False):
     account_sid = config['Twilio']['accountSid']
     auth_token = config['Twilio']['authToken']
-    to_numbers = config['Twilio']['toNumbers'].split(',')
+    to_numbers = [config['Twilio']['toNumbers'].split(',')[0]] if sendToMeOnly else config['Twilio']['toNumbers'].split(',')
     
     client = Client(account_sid, auth_token) 
     
@@ -124,7 +124,7 @@ def GetSmithTeeTimes():
                 driver.get_screenshot_as_file('screenshots/smithgolf_failed_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
                 failMessage = "{} {} - FAILED to book {} teetime on {} at {} for {} people. Trying next preferred teetime...".format(today.strftime('%m/%d/%Y'), datetime.now().strftime("%H:%M:%S"), teeTime, teeTimesDict[teeTime]['Date'], teeTimesDict[teeTime]['Course'], teeTimesDict[teeTime]['OpenSlots'])
                 print(failMessage)
-                sendSms(failMessage)
+                sendSms(failMessage, True)
                 driver.back()
     
     print("\nQuitting...")
