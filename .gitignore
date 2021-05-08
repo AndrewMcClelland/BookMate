@@ -1,5 +1,5 @@
 config.ini
-*.png
+screenshots/
 
 # Byte-compiled /
 optimized / DLL files
