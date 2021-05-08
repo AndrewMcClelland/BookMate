@@ -100,13 +100,15 @@ def GetSmithTeeTimes():
     teeTimesDict = {teeTimesGrouped[i][1].text : {'AddToCartIndex': str(i), 'IsAddToCartAvailable': str(teeTimesGrouped[i][0].text == 'Add To Cart'), 'Date' : teeTimesGrouped[i][2].text, 'Holes': teeTimesGrouped[i][3].text, 'Course': teeTimesGrouped[i][4].text, 'OpenSlots': teeTimesGrouped[i][5].text } for i in range(len(teeTimesGrouped))}
     #teeTimeRowHeaders = ['AddToCart', 'Time', 'Date', 'Holes', 'Course', 'Open', 'Slots', 'Status']
 
-    preferredTeeTimesInOrder = ['10:30 am', '10:39 am', '10:48 am', '10:57 am', '11:06 am', '11:15 am', '11:24 am', '11:33 am', '11:42 am', '11:51 am', '12:00 pm', '12:09 pm', '12:18 pm', '12:27 pm', '12:36 pm', '12:45 pm', '12:54 pm', '1:03 pm', '1:12 pm', '1:21 pm', '1:30 pm', '1:39 pm', '1:48 pm', '1:57 pm', '10:21 am', '10:12 am', '10:03 am', '9:54 am', '9:45 am', '9:36 am', '9:27 am', '9:18 am', '9:09 am', '9:00 am', '2:06 pm', '2:15 pm', '2:24 pm', '2:33 pm', '2:42 pm', '8:51 am', '8:42 am', '8:33 am', '8:24 am', '2:51 pm', '3:00 pm', '3:09 pm', '3:18 pm', '3:27 pm', '3:36 pm', '3:45 pm', '3:54 pm', '4:03 pm', '4:12 pm', '4:21 pm', '4:30 pm', '4:39 pm', '4:48 pm', '4:57 pm', '5:06 pm', '5:15 pm', '5:24 pm', '5:33 pm', '5:42 pm', '5:51 pm', '6:00 pm', '6:09 pm', '6:18 pm', '6:27 pm', '6:36 pm', '6:45 pm', '6:54 pm']
-    addToCartElements = driver.find_elements_by_xpath("//a[@title='Add To Cart' or @title='Unavailable']")
+    # preferredTeeTimesInOrder = ['10:30 am', '10:39 am', '10:48 am', '10:57 am', '11:06 am', '11:15 am', '11:24 am', '11:33 am', '11:42 am', '11:51 am', '12:00 pm', '12:09 pm', '12:18 pm', '12:27 pm', '12:36 pm', '12:45 pm', '12:54 pm', '1:03 pm', '1:12 pm', '1:21 pm', '1:30 pm', '1:39 pm', '1:48 pm', '1:57 pm', '10:21 am', '10:12 am', '10:03 am', '9:54 am', '9:45 am', '9:36 am', '9:27 am', '9:18 am', '9:09 am', '9:00 am', '2:06 pm', '2:15 pm', '2:24 pm', '2:33 pm', '2:42 pm', '8:51 am', '8:42 am', '8:33 am', '8:24 am', '2:51 pm', '3:00 pm', '3:09 pm', '3:18 pm', '3:27 pm', '3:36 pm', '3:45 pm', '3:54 pm', '4:03 pm', '4:12 pm', '4:21 pm', '4:30 pm', '4:39 pm', '4:48 pm', '4:57 pm', '5:06 pm', '5:15 pm', '5:24 pm', '5:33 pm', '5:42 pm', '5:51 pm', '6:00 pm', '6:09 pm', '6:18 pm', '6:27 pm', '6:36 pm', '6:45 pm', '6:54 pm']
+    preferredTeeTimesInOrder = ['1:30 pm', '1:39 pm', '1:48 pm', '1:57 pm', '2:06 pm', '2:15 pm', '2:24 pm', '2:33 pm', '2:42 pm', '2:51 pm', '3:00 pm', '3:09 pm', '3:18 pm', '3:27 pm', '1:12 pm', '1:21 pm', '3:36 pm', '3:45 pm', '3:54 pm', '4:03 pm', '10:30 am', '10:39 am', '10:48 am', '10:57 am', '11:06 am', '11:15 am', '11:24 am', '11:33 am', '11:42 am', '11:51 am', '12:00 pm', '12:09 pm', '12:18 pm', '12:27 pm', '12:36 pm', '12:45 pm', '12:54 pm', '1:03 pm', '10:21 am', '10:12 am', '10:03 am', '9:54 am', '9:45 am', '9:36 am', '9:27 am', '9:18 am', '9:09 am', '9:00 am', '8:51 am', '8:42 am', '8:33 am', '8:24 am', '2:51 pm', '3:00 pm', '3:09 pm', '3:18 pm', '3:27 pm', '3:36 pm', '3:45 pm', '3:54 pm', '4:03 pm', '4:12 pm', '4:21 pm', '4:30 pm', '4:39 pm', '4:48 pm', '4:57 pm', '5:06 pm', '5:15 pm', '5:24 pm', '5:33 pm', '5:42 pm', '5:51 pm', '6:00 pm', '6:09 pm', '6:18 pm', '6:27 pm', '6:36 pm', '6:45 pm', '6:54 pm']
 
     # Booking available tee time in order of preferred times
     for teeTime in preferredTeeTimesInOrder:
         if (teeTime in teeTimesDict) and (teeTimesDict[teeTime]['IsAddToCartAvailable'] == 'True') and (teeTimesDict[teeTime]['Holes'] == '18 (Front)') and (teeTimesDict[teeTime]['Course'] == 'H. Smith Richardson Golf Course') and (teeTimesDict[teeTime]['OpenSlots'] == '4'):
+            addToCartElements = driver.find_elements_by_xpath("//a[@title='Add To Cart' or @title='Unavailable']")
             addToCartElements[int(teeTimesDict[teeTime]['AddToCartIndex'])].click()
+
             driver.get_screenshot_as_file('screenshots/smithgolf_personalinfo_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
             driver.find_element_by_id('golfmemberselection_buttononeclicktofinish').click()
 
@@ -126,6 +128,7 @@ def GetSmithTeeTimes():
                 print(failMessage)
                 sendSms(failMessage, True)
                 driver.back()
+                time.sleep(1)
     
     print("\nQuitting...")
     driver.quit()
