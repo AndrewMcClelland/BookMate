@@ -1,16 +1,19 @@
 import datetime
 import logging
+import os
 
 import azure.functions as func
+
+from SmithGolfHandler import SmithGolfHandler
+from TwilioHandler import TwilioHandler
 
 
 def main(mytimer: func.TimerRequest) -> None:
     print("SmithTeeTimeBooker function ran at %s", datetime.datetime.now())
     
-    utc_timestamp = datetime.datetime.utcnow().replace(
-        tzinfo=datetime.timezone.utc).isoformat()
+    twilioHandler = TwilioHandler(os.environ["Twilio_AccountSID"], os.environ["Twilio_AuthToken"], os.environ["Twilio_ToNumbers"], os.environ["Twilio_FromNumber"])
+    smithGolfHandler = SmithGolfHandler(os.environ["Smith_Url"], os.environ["Smith_PreferredTeeTimes"], os.environ["Smith_Username"], os.environ["Smith_Password"], twilioHandler)
 
-    if mytimer.past_due:
-        logging.info('The timer is past due!')
+    smithGolfHandler.BookSmithTeeTimes()
 
-    logging.info('Python timer trigger function ran at %s', utc_timestamp)
+    print("SmithTeeTimeBooker function completed at %s", datetime.datetime.now())
