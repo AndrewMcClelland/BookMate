@@ -11,8 +11,16 @@ from TwilioHandler import TwilioHandler
 def main(mytimer: func.TimerRequest) -> None:
     print("SmithTeeTimeBooker function ran at %s", datetime.datetime.now())
     
-    twilioHandler = TwilioHandler(os.environ["Twilio_AccountSID"], os.environ["Twilio_AuthToken"], os.environ["Twilio_ToNumbers"], os.environ["Twilio_FromNumber"])
-    smithGolfHandler = SmithGolfHandler(os.environ["Smith_Url"], os.environ["Smith_PreferredTeeTimes"], os.environ["Smith_Username"], os.environ["Smith_Password"], twilioHandler)
+    twilioHandler = TwilioHandler(os.environ["Twilio_AccountSID"],
+                                  os.environ["Twilio_AuthToken"],
+                                  os.environ["Twilio_ToNumbers"],
+                                  os.environ["Twilio_FromNumber"])
+
+    smithGolfHandler = SmithGolfHandler(os.environ["Smith_Url"],
+                                        os.environ["Smith_PreferredTeeTimes"],
+                                        os.environ["Smith_Username"],
+                                        os.environ["Smith_Password"],
+                                        twilioHandler)
 
     smithGolfHandler.BookSmithTeeTimes()
 
