@@ -21,7 +21,7 @@ def main(mytimer: func.TimerRequest) -> None:
 
     logger = logging.getLogger(__name__)
     logger.addHandler(AzureLogHandler(
-        connection_string='InstrumentationKey={};IngestionEndpoint={}'.format(os.environ["APPINSIGHTS_INSTRUMENTATIONKEY"], os.environ["APPINSIGHTS_INGESTIONENDPOINT"]))
+        connection_string=os.environ["APPLICATIONINSIGHTS_CONNECTION_STRING"])
     )
 
     # logEvent = {
@@ -30,7 +30,7 @@ def main(mytimer: func.TimerRequest) -> None:
     #         'EventName': 'SmithTeeTimeBooker_Start'
     #     }
     # }
-    
+
     logger.info("SmithTeeTimeBooker_Start")
     
     twilioHandler = TwilioHandler(os.environ["Twilio_AccountSID"],
