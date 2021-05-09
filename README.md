@@ -3,6 +3,8 @@
 ## To-Do
 - Deployed to Azure and working
 - ConfigurationManager for PReferredTeeTimes and Smith Golf search settings
+- Feature flag to enable booking or not
+- BEtter error handling
 - Blob storage for screenshots
 - Cleanup old screenshots from blob
 - Load AppSettings from KeyVault
