@@ -17,7 +17,7 @@ class TwilioHandler:
         maxBodyChars = 1500
         messageBodies = [body[i: i + maxBodyChars] for i in range(0, len(body), maxBodyChars)]
 
-        for to_number in self.toNumbers:
+        for to_number in to_numbers:
             for messageBody in messageBodies:
                 message = client.messages.create( 
                                         from_=self.fromNumber,
