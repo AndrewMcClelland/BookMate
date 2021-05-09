@@ -5,7 +5,8 @@
       "name": "mytimer",
       "type": "timerTrigger",
       "direction": "in",
-      "schedule": "55 59 4 * * Sat,Sun"
+      "schedule": "0 */5 * * * *"
+      // "schedule": "55 59 4 * * Sat,Sun"
     }
   ]
 }
