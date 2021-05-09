@@ -1,5 +1,6 @@
 import re
 import time
+import logging
 from datetime import date, datetime, timedelta
 
 import requests
@@ -11,12 +12,13 @@ from selenium.webdriver.support.ui import Select
 from TwilioHandler import TwilioHandler
 
 class SmithGolfHandler:
-    def __init__(self, url: str, preferredTeeTimes, username: str, password: str, twilioHandler: TwilioHandler):
+    def __init__(self, url: str, preferredTeeTimes, username: str, password: str, twilioHandler: TwilioHandler, logger):
         self.url = url
         self.username = username
         self.password = password
         self.preferredTeeTimes = preferredTeeTimes.split(',')
         self.twilioHandler = twilioHandler
+        self.logger = logger
 
         options = Options()
         options.headless = True
@@ -26,7 +28,7 @@ class SmithGolfHandler:
 
     def BookSmithTeeTimes(self):
         
-        print("Navigating to Smith URL")
+        self.logger.info("SmithGolfHandler.BookSmithTeeTimes_Start")
 
         self.driver.get(self.url)
 
@@ -39,7 +41,7 @@ class SmithGolfHandler:
 
         #self.driver.get_screenshot_as_file('screenshots/smithgolf_mainpage_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
 
-        print("Logging in")
+        self.logger.info("SmithGolfHandler.BookSmithTeeTimes_Login")
 
         # Login
         self.driver.find_element_by_xpath("//a[@class='login-link popup-link']").click()
@@ -56,7 +58,7 @@ class SmithGolfHandler:
         self.driver.get(self.url)
         #self.driver.get_screenshot_as_file('screenshots/smithgolf_LoggedInGolfTeeTimes_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
 
-        print("Searching tee times")
+        self.logger.info("SmithGolfHandler.BookSmithTeeTimes_TeeTimeSearch")
 
         # TeeTime settings
         courseDropdownXPath = "//select[@name='secondarycode']/option[text()='H. Smith Richardson Golf Course']"
@@ -91,13 +93,13 @@ class SmithGolfHandler:
         teeTimesDict = {teeTimesGrouped[i][1].text : {'AddToCartIndex': str(i), 'IsAddToCartAvailable': str(teeTimesGrouped[i][0].text == 'Add To Cart'), 'Date' : teeTimesGrouped[i][2].text, 'Holes': teeTimesGrouped[i][3].text, 'Course': teeTimesGrouped[i][4].text, 'OpenSlots': teeTimesGrouped[i][5].text } for i in range(len(teeTimesGrouped))}
         #teeTimeRowHeaders = ['AddToCart', 'Time', 'Date', 'Holes', 'Course', 'Open', 'Slots', 'Status']
 
-        print("Searching for available tee times")
+        self.logger.info("SmithGolfHandler.BookSmithTeeTimes_AvailableTimes")
 
         # Booking available tee time in order of preferred times
         for teeTime in self.preferredTeeTimes:
             if (teeTime in teeTimesDict) and (teeTimesDict[teeTime]['IsAddToCartAvailable'] == 'True') and (teeTimesDict[teeTime]['Holes'] == '18 (Front)') and (teeTimesDict[teeTime]['Course'] == 'H. Smith Richardson Golf Course') and (teeTimesDict[teeTime]['OpenSlots'] == '4'):
 
-                print("Trying to book %s tee time", teeTime)
+                self.logger.info("SmithGolfHandler.BookSmithTeeTimes_BookTimeAttempt", extra={'custom_dimensions': {'TeeTime': teeTime}})
 
                 addToCartElements = self.driver.find_elements_by_xpath("//a[@title='Add To Cart' or @title='Unavailable']")
                 # addToCartElements[int(teeTimesDict[teeTime]['AddToCartIndex'])].click()
@@ -110,22 +112,20 @@ class SmithGolfHandler:
                     time.sleep(5)
                     #self.driver.get_screenshot_as_file('screenshots/smithgolf_submitted_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
                     self.driver.find_element_by_id('webconfirmation_pageheader')
-                    print("Booked %s", teeTime)
+                    self.logger.info("SmithGolfHandler.BookSmithTeeTimes_BookTimeSuccess", extra={'custom_dimensions': {'TeeTime': teeTime}})
                     successMessage = "{} {} - booked {} teetime on {} at {} for {} people.".format(today.strftime('%m/%d/%Y'), datetime.now().strftime("%H:%M:%S"), teeTime, teeTimesDict[teeTime]['Date'], teeTimesDict[teeTime]['Course'], teeTimesDict[teeTime]['OpenSlots'])
-                    print(successMessage)
                     self.twilioHandler.sendSms(successMessage)
-                    print("Sent success SMS")
+                    self.logger.info("SmithGolfHandler.BookSmithTeeTimes_TwilioSuccessSent")
                     break
                 # Failed to book Tee Time, retrying with next preferred time
                 except:
                     #self.driver.get_screenshot_as_file('screenshots/smithgolf_failed_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
-                    print("Failed to book %s", teeTime)
+                    self.logger.info("SmithGolfHandler.BookSmithTeeTimes_BookTimeFail", extra={'custom_dimensions': {'TeeTime': teeTime}})
                     failMessage = "{} {} - FAILED to book {} teetime on {} at {} for {} people. Trying next preferred teetime...".format(today.strftime('%m/%d/%Y'), datetime.now().strftime("%H:%M:%S"), teeTime, teeTimesDict[teeTime]['Date'], teeTimesDict[teeTime]['Course'], teeTimesDict[teeTime]['OpenSlots'])
-                    print(failMessage)
                     self.twilioHandler.sendSms(failMessage, True)
-                    print("Sent failure SMS; retrying with new tee time")
+                    self.logger.info("SmithGolfHandler.BookSmithTeeTimes_TwilioFailSent")
                     self.driver.back()
                     time.sleep(1)
         
-        print("\nQuitting...")
+        self.logger.info("SmithGolfHandler.BookSmithTeeTimes_DriverQuit")
         self.driver.quit()

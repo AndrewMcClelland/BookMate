@@ -3,7 +3,8 @@
 # Manually managing azure-functions-worker may cause unexpected issues
 
 azure-functions
-
 requests
 selenium
 twilio
+opencensus-ext-azure
+opencensus-ext-logging
