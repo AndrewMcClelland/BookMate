@@ -12,11 +12,12 @@ from selenium.webdriver.support.ui import Select
 from TwilioHandler import TwilioHandler
 
 class SmithGolfHandler:
-    def __init__(self, url: str, preferredTeeTimes, username: str, password: str, twilioHandler: TwilioHandler, logger):
+    def __init__(self, url: str, preferredTeeTimes, username: str, password: str, isDevMode: bool, twilioHandler: TwilioHandler, logger):
         self.url = url
         self.username = username
         self.password = password
         self.preferredTeeTimes = preferredTeeTimes.split(',')
+        self.isDevMode = isDevMode
         self.twilioHandler = twilioHandler
         self.logger = logger
 
@@ -102,10 +103,12 @@ class SmithGolfHandler:
                 self.logger.info("SmithGolfHandler.BookSmithTeeTimes_BookTimeAttempt", extra={'custom_dimensions': {'TeeTime': teeTime}})
 
                 addToCartElements = self.driver.find_elements_by_xpath("//a[@title='Add To Cart' or @title='Unavailable']")
-                # addToCartElements[int(teeTimesDict[teeTime]['AddToCartIndex'])].click()
 
-                #self.driver.get_screenshot_as_file('screenshots/smithgolf_personalinfo_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
-                # self.driver.find_element_by_id('golfmemberselection_buttononeclicktofinish').click()
+                if not self.isDevMode:
+                    addToCartElements[int(teeTimesDict[teeTime]['AddToCartIndex'])].click()
+
+                    #self.driver.get_screenshot_as_file('screenshots/smithgolf_personalinfo_{}-{}.png'.format(today.strftime('%m.%d.%Y'), timeToRun.replace(':', '-')))
+                    self.driver.find_element_by_id('golfmemberselection_buttononeclicktofinish').click()
 
                 # Successfully booked Tee Time
                 try:
@@ -114,7 +117,7 @@ class SmithGolfHandler:
                     self.driver.find_element_by_id('webconfirmation_pageheader')
                     self.logger.info("SmithGolfHandler.BookSmithTeeTimes_BookTimeSuccess", extra={'custom_dimensions': {'TeeTime': teeTime}})
                     successMessage = "{} {} - booked {} teetime on {} at {} for {} people.".format(today.strftime('%m/%d/%Y'), datetime.now().strftime("%H:%M:%S"), teeTime, teeTimesDict[teeTime]['Date'], teeTimesDict[teeTime]['Course'], teeTimesDict[teeTime]['OpenSlots'])
-                    self.twilioHandler.sendSms(successMessage)
+                    self.twilioHandler.sendSms(successMessage, self.isDevMode)
                     self.logger.info("SmithGolfHandler.BookSmithTeeTimes_TwilioSuccessSent")
                     break
                 # Failed to book Tee Time, retrying with next preferred time
@@ -126,6 +129,9 @@ class SmithGolfHandler:
                     self.logger.info("SmithGolfHandler.BookSmithTeeTimes_TwilioFailSent")
                     self.driver.back()
                     time.sleep(1)
-        
+
+                if self.isDevMode:
+                    break
+
         self.logger.info("SmithGolfHandler.BookSmithTeeTimes_DriverQuit")
         self.driver.quit()

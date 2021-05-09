@@ -43,6 +43,7 @@ def main(mytimer: func.TimerRequest) -> None:
                                         os.environ["Smith_PreferredTeeTimes"],
                                         os.environ["Smith_Username"],
                                         os.environ["Smith_Password"],
+                                        os.environ["Smith_IsDevMode"] == "true",
                                         twilioHandler,
                                         logger)
 
