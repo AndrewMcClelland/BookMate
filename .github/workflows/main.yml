@@ -20,7 +20,7 @@ env:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment: dev
+    environment: prod
     steps:
     - name: 'Checkout GitHub Action'
       uses: actions/checkout@master
