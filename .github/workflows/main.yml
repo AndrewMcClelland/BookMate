@@ -42,9 +42,13 @@ jobs:
       shell: bash
       run: |
         pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-        echo "Current Path: $PWD ChromeDriver Path: $CHROMEWEBDRIVER"
+        echo "Current Path: $PWD"
         ls -alt $PWD
+        echo "ChromeDriver Path: $CHROMEWEBDRIVER"
         ls -alt $CHROMEWEBDRIVER
+        cp $CHROMEWEBDRIVER/chromedriver .
+        echo "Current Path: $PWD"
+        ls -alt $PWD
         popd
 
     # - name: 'Run Azure Functions Action'
