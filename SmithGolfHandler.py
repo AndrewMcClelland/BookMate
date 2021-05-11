@@ -23,7 +23,7 @@ class SmithGolfHandler:
 
         options = Options()
         options.headless = True
-        self.driver = webdriver.Chrome(executable_path='./chromedriver', options=options)
+        self.driver = webdriver.Chrome(options=options)
         self.driver.implicitly_wait(30)
         self.driver.maximize_window()
 
