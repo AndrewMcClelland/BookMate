@@ -44,6 +44,9 @@ def main(mytimer: func.TimerRequest) -> None:
                                         twilioHandler=twilioHandler,
                                         logger=logger)
 
-    smithGolfHandler.BookSmithTeeTimes()
+    try:
+        smithGolfHandler.BookSmithTeeTimes()
+    except Exception as e:
+        logger.exception(f"SmithTeeTimeBooker_Error : {e}")
 
     logger.info("SmithTeeTimeBooker ended.")

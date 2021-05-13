@@ -14,7 +14,7 @@ class SmithGolfHandler:
         self.username = username
         self.password = password
         self.playerIdentifier = playerIdentifier
-        self.preferredTeeTimes = preferredTeeTimes
+        self.preferredTeeTimes = preferredTeeTimes.split(',')
         self.loginUrl = baseUrl + loginEndpoint
         self.searchTimesUrl = baseUrl + searchTimesEndpoint
         self.submitCartUrl = baseUrl + submitCartEndpoint
