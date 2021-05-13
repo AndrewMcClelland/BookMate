@@ -11,7 +11,7 @@ from selenium.webdriver.support.ui import Select
 
 from TwilioHandler import TwilioHandler
 
-class SmithGolfHandler:
+class SmithGolfHandler_Selenium:
     def __init__(self, url: str, preferredTeeTimes, username: str, password: str, isDevMode: bool, twilioHandler: TwilioHandler, logger):
         self.url = url
         self.username = username

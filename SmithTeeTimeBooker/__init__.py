@@ -24,28 +24,25 @@ def main(mytimer: func.TimerRequest) -> None:
         connection_string=os.environ["APPLICATIONINSIGHTS_CONNECTION_STRING"])
     )
 
-    # logEvent = {
-    #     'custom_dimensions': {
-    #         'OperationId': str(uuid.uuid4),
-    #         'EventName': 'SmithTeeTimeBooker_Start'
-    #     }
-    # }
-
     logger.info("SmithTeeTimeBooker_Start")
     
-    twilioHandler = TwilioHandler(os.environ["Twilio_AccountSID"],
-                                  os.environ["Twilio_AuthToken"],
-                                  os.environ["Twilio_ToNumbers"],
-                                  os.environ["Twilio_FromNumber"],
-                                  logger)
+    twilioHandler = TwilioHandler(accountSID=os.environ["Twilio_AccountSID"],
+                                  authToken=os.environ["Twilio_AuthToken"],
+                                  toNumbers=os.environ["Twilio_ToNumbers"],
+                                  fromNumber=os.environ["Twilio_FromNumber"],
+                                  logger=logger)
 
-    smithGolfHandler = SmithGolfHandler(os.environ["Smith_Url"],
-                                        os.environ["Smith_PreferredTeeTimes"],
-                                        os.environ["Smith_Username"],
-                                        os.environ["Smith_Password"],
-                                        os.environ["Smith_IsDevMode"] == "true",
-                                        twilioHandler,
-                                        logger)
+    smithGolfHandler = SmithGolfHandler(preferredTeeTimes=os.environ["Smith_PreferredTeeTimes"],
+                                        username=os.environ["Smith_Username"],
+                                        password=os.environ["Smith_Password"],
+                                        playerIdentifier=os.environ["Smith_PlayerIdentifier"],
+                                        baseUrl=os.environ["Smith_Url_Base"],
+                                        loginEndpoint=os.environ["Smith_Endpoint_Login"],
+                                        searchTimesEndpoint=os.environ["Smith_Endpoint_SearchTimes"],
+                                        submitCartEndpoint=os.environ["Smith_Endpoint_SubmitCart"],
+                                        isDevMode=os.environ["Smith_IsDevMode"] == "true",
+                                        twilioHandler=twilioHandler,
+                                        logger=logger)
 
     smithGolfHandler.BookSmithTeeTimes()
 

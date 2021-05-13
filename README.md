@@ -5,10 +5,8 @@
 - [ ] ConfigurationManager for PReferredTeeTimes and Smith Golf search settings
 - [ ] Feature flag to enable booking or not
 - [ ] BEtter error handling
-- [ ] Blob storage for screenshots
-- [ ] Cleanup old screenshots from blob
-- [ ] Load AppSettings from KeyVault
-- [ ] Logging
+- [x] Load AppSettings from KeyVault
+- [x] Logging
 - [ ] Deploy AppSettings as ARM
 - [ ] Local script that levergaes same Helper Classes
 - [ ] Local and deployed instructions
@@ -16,7 +14,6 @@
 - [ ] Dev & master branches
 - [ ] dev and prod environments & pipelines
 - [ ] Better directory structure
-- [ ] XPaths in separate data file?
 - [ ] Make Public repo
 - [ ] GolfNow adapter?? Use APIs instead of Selenium
 - [ ] Tests?

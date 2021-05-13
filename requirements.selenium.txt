@@ -4,7 +4,7 @@
 
 azure-functions
 requests
-beautifulsoup4
+selenium
 twilio
 opencensus-ext-azure
 opencensus-ext-logging
