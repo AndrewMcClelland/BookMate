@@ -32,7 +32,6 @@ class SmithGolfHandler:
         dayInAWeekString = dayInAWeek.strftime('%m/%d/%Y')
 
         # Login to site
-
         self.logger.info("SmithGolfHandler.BookSmithTeeTimes_Login")
         
         loginPayload = {
@@ -42,10 +41,11 @@ class SmithGolfHandler:
             'weblogin_password': self.password,
             'weblogin_buttonlogin': 'Login'
         }
-
         loginResponse = self.session.post(url=self.loginUrl, data=loginPayload)
 
-        # Search for teetimes
+        # Search for teetimes and store in dictionary
+        self.logger.info("SmithGolfHandler.BookSmithTeeTimes_SearchTeeTimes")
+
         numberPlayers = "4"
         numberHoles = "18"
         searchDate = quote_plus(dayInAWeekString)
@@ -77,20 +77,23 @@ class SmithGolfHandler:
                 'OpenSlots': teeTimeOpenSlots
             }
 
-        self.logger.info("SmithGolfHandler.BookSmithTeeTimes_AvailableTimes")
+        # Select available tee time that has highest preference
+        self.logger.info("SmithGolfHandler.BookSmithTeeTimes_FindAvailablePreferredTeeTime")
 
         # Booking available tee time in order of preferred times
         for teeTime in self.preferredTeeTimes:
             if (teeTime in teeTimesDict) and (teeTimesDict[teeTime]['IsAddToCartAvailable'] == True) and (teeTimesDict[teeTime]['Holes'] == '18 (Front)') and (teeTimesDict[teeTime]['Course'] == 'H. Smith Richardson Golf Course') and (teeTimesDict[teeTime]['OpenSlots'] == '4'):
 
-                self.logger.info("SmithGolfHandler.BookSmithTeeTimes_BookTimeAttempt", extra={'custom_dimensions': {'TeeTime': teeTime}})
+                self.logger.info("SmithGolfHandler.BookSmithTeeTimes_BookTimeAttempt", extra={'custom_dimensions': {'Date': teeTimesDict[teeTime]['Date'], 'TeeTime': teeTime}})
 
                 if not self.isDevMode:
-                    self.logger.info("SmithGolfHandler.BookSmithTeeTimes_BookTimeAttempt", extra={'custom_dimensions': {'TeeTime': teeTime}})
+                    # Add tee time to the cart
+                    self.logger.info("SmithGolfHandler.BookSmithTeeTimes_AddTeeTimeToCart", extra={'custom_dimensions': {'Date': teeTimesDict[teeTime]['Date'], 'TeeTime': teeTime}})
 
                     addToCartResponse = self.session.get(teeTimesDict[teeTime]['AddToCartUrl'])
 
-                    self.logger.info("SmithGolfHandler.BookSmithTeeTimes_BookTimeAttempt", extra={'custom_dimensions': {'TeeTime': teeTime}})
+                    # Submit cart with tee time
+                    self.logger.info("SmithGolfHandler.BookSmithTeeTimes_SubmitTeeTimeCart", extra={'custom_dimensions': {'Date': teeTimesDict[teeTime]['Date'], 'TeeTime': teeTime}})
 
                     submitCartPayload = {
                         'Action': 'process',
@@ -104,21 +107,24 @@ class SmithGolfHandler:
                     }
                     submitCartResponse = self.session.post(self.submitCartUrl, data=submitCartPayload)
 
+                    # Confirm success of booking
+                    self.logger.info("SmithGolfHandler.BookSmithTeeTimes_ConfirmSuccess", extra={'custom_dimensions': {'Date': teeTimesDict[teeTime]['Date'], 'TeeTime': teeTime}})
                     try:
                         parsedSubmitCart = BeautifulSoup(submitCartResponse.text)
                         bookingConfirmed = parsedSubmitCart.body.find('h1', attrs={'id':'webconfirmation_pageheader'}).text == "Your Online transaction is complete. Please select an option below to continue."
                     except:
                         bookingConfirmed = False
 
+                    # Successfully booked Tee time
                     if bookingConfirmed:
-                        self.logger.info("SmithGolfHandler.BookSmithTeeTimes_BookTimeSuccess", extra={'custom_dimensions': {'TeeTime': teeTime}})
+                        self.logger.info("SmithGolfHandler.BookSmithTeeTimes_BookTimeSuccess", extra={'custom_dimensions': {'Date': teeTimesDict[teeTime]['Date'], 'TeeTime': teeTime}})
                         successMessage = "{} {} - booked {} teetime on {} at {} for {} people.".format(today.strftime('%m/%d/%Y'), datetime.now().strftime("%H:%M:%S"), teeTime, teeTimesDict[teeTime]['Date'], teeTimesDict[teeTime]['Course'], teeTimesDict[teeTime]['OpenSlots'])
                         self.twilioHandler.sendSms(successMessage, self.isDevMode)
                         self.logger.info("SmithGolfHandler.BookSmithTeeTimes_TwilioSuccessSent")
                         break
                     # Failed to book Tee Time, retrying with next preferred time
                     else:
-                        self.logger.info("SmithGolfHandler.BookSmithTeeTimes_BookTimeFail", extra={'custom_dimensions': {'TeeTime': teeTime}})
+                        self.logger.info("SmithGolfHandler.BookSmithTeeTimes_BookTimeFail", extra={'custom_dimensions': {'Date': teeTimesDict[teeTime]['Date'], 'TeeTime': teeTime}})
                         failMessage = "{} {} - FAILED to book {} teetime on {} at {} for {} people. Trying next preferred teetime...".format(today.strftime('%m/%d/%Y'), datetime.now().strftime("%H:%M:%S"), teeTime, teeTimesDict[teeTime]['Date'], teeTimesDict[teeTime]['Course'], teeTimesDict[teeTime]['OpenSlots'])
                         self.twilioHandler.sendSms(failMessage, True)
                         self.logger.info("SmithGolfHandler.BookSmithTeeTimes_TwilioFailSent")
