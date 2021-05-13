@@ -4,7 +4,7 @@
 - [ ] Deployed to Azure and working
 - [ ] ConfigurationManager for PReferredTeeTimes and Smith Golf search settings
 - [ ] Feature flag to enable booking or not
-- [ ] BEtter error handling
+- [ ] Better error handling
 - [x] Load AppSettings from KeyVault
 - [x] Logging
 - [ ] Deploy AppSettings as ARM
