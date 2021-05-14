@@ -1,79 +1,29 @@
 import re
 import time
 import logging
-import platform
+import requests
 from datetime import date, datetime, timedelta
 from urllib.parse import quote_plus
 from bs4 import BeautifulSoup
 
-import requests
-
+from GolfHandler import GolfHandler
 from TwilioHandler import TwilioHandler
 
-class SmithGolfHandler:
+class SmithGolfHandler(GolfHandler):
     def __init__(self, username: str, password: str, numberHoles: str, numberPlayers: str, preferredTeeTimeRanges: str, playerIdentifier: str, baseUrl: str, loginEndpoint: str, searchTimesEndpoint: str, submitCartEndpoint: str, bookTimeEnabled: bool, twilioHandler: TwilioHandler, logger):
+        super().__init__(numberHoles=numberHoles, numberPlayers=numberPlayers, preferredTeeTimeRanges=preferredTeeTimeRanges, baseUrl=baseUrl, bookTimeEnabled=bookTimeEnabled, twilioHandler=twilioHandler, logger=logger)
+
         self.username = username
         self.password = password
         self.playerIdentifier = playerIdentifier
-        self.preferredTeeTimeRanges = preferredTeeTimeRanges.split(',')
         self.loginUrl = baseUrl + loginEndpoint
         self.searchTimesUrl = baseUrl + searchTimesEndpoint
         self.submitCartUrl = baseUrl + submitCartEndpoint
-        self.bookTimeEnabled = bookTimeEnabled
-        self.twilioHandler = twilioHandler
-        self.logger = logger
 
-        self.session = requests.Session()
-    
-    def __SortAvailableTeeTimes(self, availableTeeTimes):
-        sortedAvailableTeeTimes = []
-        sortedAvailableTeeTimeBuckets = {}
-        preferredTeeTimeBuckets = {}
-        timePriority = 1
-
-        teeTimeFormat = "%I:%M %p"
-
-        for preferredTeeTimeRange in self.preferredTeeTimeRanges:
-            preferredFirstTime = datetime.strptime(preferredTeeTimeRange.split('-')[0], teeTimeFormat)
-            preferredLastTime = datetime.strptime(preferredTeeTimeRange.split('-')[1], teeTimeFormat)
-            earlierPreferredTime = min(preferredFirstTime, preferredLastTime)
-            laterPreferredTime = max(preferredFirstTime, preferredLastTime)
-            ascendingTimePreference = preferredFirstTime < preferredLastTime
-
-            preferredTeeTimeBuckets[timePriority] = {
-                'preferredFirstTime': preferredFirstTime,
-                'preferredLastTime': preferredLastTime,
-                'earlierPreferredTime': earlierPreferredTime,
-                'laterPreferredTime': laterPreferredTime,
-                'ascendingTimePreference': ascendingTimePreference,
-            }
-
-            sortedAvailableTeeTimeBuckets[timePriority] = []
-
-            timePriority += 1
-
-        for availableTeeTime in availableTeeTimes:
-            # Convert string to datetme object
-            teeTime = datetime.strptime(availableTeeTime, teeTimeFormat)
-
-            # Assign available tee time to preference bucket based on preferred tee time ranges
-            for priorityKey in preferredTeeTimeBuckets:
-                if preferredTeeTimeBuckets[priorityKey]['earlierPreferredTime'] <= teeTime and teeTime <= preferredTeeTimeBuckets[priorityKey]['laterPreferredTime']:
-                    sortedAvailableTeeTimeBuckets[priorityKey].append(teeTime)
-        
-        # To remove padded leading 0 on datetime: use '#' for Windows and '-' for Linux
-        isWindows = platform.system() == "Windows"
-        printTeeTimeFormat = "%{0}I:%M %p".format("#" if isWindows else '-')
-        for priority in range(1, timePriority):
-            currPriorityTeeTimes = sortedAvailableTeeTimeBuckets[priority]
-            sortedPriorityTeeTimes = sorted(currPriorityTeeTimes, reverse=not preferredTeeTimeBuckets[priority]['ascendingTimePreference'])
-            sortedAvailableTeeTimes.extend([teeTime.strftime(printTeeTimeFormat).lower() for teeTime in sortedPriorityTeeTimes])
-
-        return sortedAvailableTeeTimes
-
-    def BookSmithTeeTimes(self):
+    def BookTeeTimes(self):
         self.logger.info("SmithGolfHandler.BookSmithTeeTimes_Start")
 
+        # Book for date 7 days from today
         today = datetime.now()
         dayInAWeek = today + timedelta(days=7)
         dayInAWeekString = dayInAWeek.strftime('%m/%d/%Y')
@@ -93,12 +43,10 @@ class SmithGolfHandler:
         # Search for teetimes and store in dictionary
         self.logger.info("SmithGolfHandler.BookSmithTeeTimes_SearchTeeTimes")
 
-        numberPlayers = "4"
-        numberHoles = "18"
         searchDate = quote_plus(dayInAWeekString)
         searchTime = quote_plus("06:00 AM")
 
-        searchTimesResponse = self.session.get(url=self.searchTimesUrl.format(numberPlayers, searchDate, searchTime, numberHoles))
+        searchTimesResponse = self.session.get(url=self.searchTimesUrl.format(self.numberPlayers, searchDate, searchTime, self.numberHoles))
 
         parsedSearchTimes = BeautifulSoup(searchTimesResponse.text)
         teeTimeRows = parsedSearchTimes.find_all('table', attrs={'id': 'grwebsearch_output_table'})[0].find_all('tr')
@@ -124,7 +72,7 @@ class SmithGolfHandler:
                 'OpenSlots': teeTimeOpenSlots
             }
 
-        sortedAvailableTeeTimes = self.__SortAvailableTeeTimes(list(availableTeeTimesDict.keys()))
+        sortedAvailableTeeTimes = super()._SortAvailableTeeTimes(list(availableTeeTimesDict.keys()))
 
         # Select available tee time that has highest preference
         self.logger.info("SmithGolfHandler.BookSmithTeeTimes_FindAvailablePreferredTeeTime")

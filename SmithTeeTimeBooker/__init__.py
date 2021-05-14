@@ -56,8 +56,8 @@ def main(mytimer: func.TimerRequest) -> None:
                                         logger=logger)
 
     try:
-        smithGolfHandler.BookSmithTeeTimes()
+        smithGolfHandler.BookTeeTimes()
     except Exception as e:
         logger.exception(f"SmithTeeTimeBooker_Error : {e}")
 
-    logger.info("SmithTeeTimeBooker ended.")
+    logger.info("SmithTeeTimeBooker_End")
