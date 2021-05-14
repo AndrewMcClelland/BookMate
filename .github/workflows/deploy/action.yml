@@ -21,7 +21,7 @@ inputs:
   dependsOn:
     description: 'dependsOn'
     required: false
-    default: []
+    default: ''
 
 runs:
   using: "composite"

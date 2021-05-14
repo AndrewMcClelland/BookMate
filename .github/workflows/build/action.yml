@@ -18,7 +18,7 @@ inputs:
   dependsOn:
     description: 'dependsOn'
     required: false
-    default: []
+    default: ''
   disableUnitTest:
     description: 'disableUnitTest'
     required: false
