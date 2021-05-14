@@ -2,8 +2,8 @@ import datetime
 import logging
 import os
 import uuid
-
 import azure.functions as func
+from azure.appconfiguration import AzureAppConfigurationClient
 from opencensus.ext.azure.log_exporter import AzureLogHandler
 from opencensus.trace import config_integration
 from opencensus.trace.samplers import AlwaysOnSampler
@@ -24,6 +24,15 @@ def main(mytimer: func.TimerRequest) -> None:
         connection_string=os.environ["APPLICATIONINSIGHTS_CONNECTION_STRING"])
     )
 
+    # Setup IAM for FunctionApp - https://docs.microsoft.com/en-us/azure/azure-app-configuration/howto-integrate-azure-managed-service-identity?tabs=core2x
+    appConfigClient = AzureAppConfigurationClient.from_connection_string(os.getenv('AppConfigConnectionString'))
+    numberHoles = appConfigClient.get_configuration_setting(key="Smith:NumberHoles", label="prod")
+    numberPlayers = appConfigClient.get_configuration_setting(key="Smith:NumberPlayers", label="prod")
+    preferredTeeTimes = appConfigClient.get_configuration_setting(key="Smith:PreferredTeeTimes", label="prod")
+
+    # Get Feature Flag
+    # enableBookingTeeTime = ???
+
     logger.info("SmithTeeTimeBooker_Start")
     
     twilioHandler = TwilioHandler(accountSID=os.environ["Twilio_AccountSID"],
@@ -32,7 +41,9 @@ def main(mytimer: func.TimerRequest) -> None:
                                   fromNumber=os.environ["Twilio_FromNumber"],
                                   logger=logger)
 
-    smithGolfHandler = SmithGolfHandler(preferredTeeTimes=os.environ["Smith_PreferredTeeTimes"],
+    smithGolfHandler = SmithGolfHandler(numberHoles=numberHoles,
+                                        numberPlayers=numberPlayers,
+                                        preferredTeeTimes=preferredTeeTimes,
                                         username=os.environ["Smith_Username"],
                                         password=os.environ["Smith_Password"],
                                         playerIdentifier=os.environ["Smith_PlayerIdentifier"],
