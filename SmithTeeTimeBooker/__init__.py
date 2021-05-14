@@ -26,9 +26,9 @@ def main(mytimer: func.TimerRequest) -> None:
 
     # Setup IAM for FunctionApp - https://docs.microsoft.com/en-us/azure/azure-app-configuration/howto-integrate-azure-managed-service-identity?tabs=core2x
     appConfigClient = AzureAppConfigurationClient.from_connection_string(os.getenv('AppConfigConnectionString'))
-    numberHoles = appConfigClient.get_configuration_setting(key="Smith:NumberHoles", label="prod")
-    numberPlayers = appConfigClient.get_configuration_setting(key="Smith:NumberPlayers", label="prod")
-    preferredTeeTimes = appConfigClient.get_configuration_setting(key="Smith:PreferredTeeTimes", label="prod")
+    numberHoles = appConfigClient.get_configuration_setting(key="Smith:NumberHoles", label="prod").value
+    numberPlayers = appConfigClient.get_configuration_setting(key="Smith:NumberPlayers", label="prod").value
+    preferredTeeTimeRanges = appConfigClient.get_configuration_setting(key="Smith:PreferredTeeTimeRanges", label="prod").value
 
     # Get Feature Flag
     # enableBookingTeeTime = ???
@@ -43,7 +43,7 @@ def main(mytimer: func.TimerRequest) -> None:
 
     smithGolfHandler = SmithGolfHandler(numberHoles=numberHoles,
                                         numberPlayers=numberPlayers,
-                                        preferredTeeTimes=preferredTeeTimes,
+                                        preferredTeeTimeRanges=preferredTeeTimeRanges,
                                         username=os.environ["Smith_Username"],
                                         password=os.environ["Smith_Password"],
                                         playerIdentifier=os.environ["Smith_PlayerIdentifier"],
