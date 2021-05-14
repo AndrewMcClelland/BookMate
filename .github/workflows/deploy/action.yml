@@ -1,0 +1,40 @@
+name: 'Deploy Azure Function Apps'
+
+inputs:  
+  jobName:
+    description: 'Job name'
+    required: false
+    default: 'Build Services'
+  environment:
+    description: 'environment'
+    required: true
+  pythonVersion:
+    description: 'pythonVersion'
+    required: false
+    default: '3.7'
+  functionAppName:
+    description: 'functionAppName'
+    required: true
+  functionAppPackagePath:
+    description: 'functionAppPackagePath'
+    required: true
+  dependsOn:
+    description: 'dependsOn'
+    required: false
+    default: []
+
+runs:
+  using: "composite"
+  steps:
+    - name: 'Run Azure Functions Action'
+        uses: Azure/functions-action@v1
+        id: fa
+        with:
+          app-name: ${{ inputs.functionAppName }}
+          package: ${{ inputs.functionAppPackagePath }}
+          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+          # Enabled last two app settings two execute remote-buiild to support chromedriver
+          # https://github.com/marketplace/actions/azure-functions-action
+          # https://docs.microsoft.com/en-us/azure/azure-functions/functions-deployment-technologies#remote-build
+          scm-do-build-during-deployment: true
+          enable-oryx-build: true

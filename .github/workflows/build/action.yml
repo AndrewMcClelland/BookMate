@@ -1,0 +1,47 @@
+name: 'Setup Python Build Environment'
+
+inputs:  
+  jobName:
+    description: 'Job name'
+    required: false
+    default: 'Build Services'
+  environment:
+    description: 'Job name'
+    required: true
+  pythonVersion:
+    description: 'Job name'
+    required: false
+    default: '3.7'
+  functionAppPackagePath:
+    description: 'functionAppPackagePath'
+    required: true
+  dependsOn:
+    description: 'dependsOn'
+    required: false
+    default: []
+  disableUnitTest:
+    description: 'disableUnitTest'
+    required: false
+    default: false
+
+runs:
+  using: "composite"
+  steps:
+    - run: echo "Branch=$GITHUB_REF EventName=$GITHUB_EVENT_NAME EventPath=$GITHUB_EVENT_PATH RequestFor=$GITHUB_ACTOR ActionPath=GITHUB_ACTION_PATH"
+      displayName: Build Reason
+
+    - name: 'Checkout GitHub Action'
+      uses: actions/checkout@master
+
+    - name: Setup Python ${{ inputs.pythonVersion }} Environment
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ inputs.pythonVersion }}
+
+    - name: 'Resolve Project Dependencies Using Pip'
+      shell: bash
+      run: |
+        pushd './${{ inputs.functionAppPackagePath }}'
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt --target=".python_packages/lib/site-packages"
+        popd
