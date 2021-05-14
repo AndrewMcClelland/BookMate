@@ -6,8 +6,8 @@ from datetime import date, datetime, timedelta
 from urllib.parse import quote_plus
 from bs4 import BeautifulSoup
 
-from GolfHandler import GolfHandler
-from TwilioHandler import TwilioHandler
+from handlers.GolfHandler import GolfHandler
+from handlers.TwilioHandler import TwilioHandler
 
 class SmithGolfHandler(GolfHandler):
     def __init__(self, username: str, password: str, numberHoles: str, numberPlayers: str, preferredTeeTimeRanges: str, playerIdentifier: str, baseUrl: str, loginEndpoint: str, searchTimesEndpoint: str, submitCartEndpoint: str, bookTimeEnabled: bool, twilioHandler: TwilioHandler, logger):

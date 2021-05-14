@@ -9,7 +9,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 
-from TwilioHandler import TwilioHandler
+from handlers.TwilioHandler import TwilioHandler
 
 class SmithGolfHandler_Selenium:
     def __init__(self, url: str, preferredTeeTimes, username: str, password: str, isDevMode: bool, twilioHandler: TwilioHandler, logger):

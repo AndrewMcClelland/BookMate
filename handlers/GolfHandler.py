@@ -2,7 +2,7 @@ import platform
 import requests
 from datetime import datetime
 
-from TwilioHandler import TwilioHandler
+from handlers.TwilioHandler import TwilioHandler
 
 class GolfHandler:
     def __init__(self, numberHoles: str, numberPlayers: str, preferredTeeTimeRanges: str, baseUrl: str, bookTimeEnabled: bool, twilioHandler: TwilioHandler, logger):
