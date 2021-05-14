@@ -32,6 +32,7 @@ runs:
       run: |
         echo "Branch=$GITHUB_REF EventName=$GITHUB_EVENT_NAME EventPath=$GITHUB_EVENT_PATH RequestFor=$GITHUB_ACTOR ActionPath=GITHUB_ACTION_PATH"
 
+    # COMPOSITE ACTIONS DON'T SUPPORT 'uses' YET
     - name: Setup Python ${{ inputs.pythonVersion }} Environment
       uses: actions/setup-python@v1
       with:

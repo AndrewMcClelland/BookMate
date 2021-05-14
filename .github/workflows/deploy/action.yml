@@ -26,6 +26,7 @@ inputs:
 runs:
   using: "composite"
   steps:
+    # COMPOSITE ACTIONS DON'T SUPPORT 'uses' YET
     - name: 'Run Azure Functions Action'
         uses: Azure/functions-action@v1
         id: fa

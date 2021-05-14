@@ -1,0 +1,36 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI/CD - Composite Actions (NOT FUNCTIONAL UNTIL COMPOSITE ACTION SUPPORTS 'USES')
+
+# Controls when the action will run. 
+# on:
+#   # Triggers the workflow on push or pull request events but only for the main branch
+#   push:
+#     branches: [ develop ]
+#   pull_request:
+#     branches: [ develop ]
+#   # Allows you to run this workflow manually from the Actions tab
+#   workflow_dispatch:
+
+jobs:
+  build:
+    name: Setup Python Environment
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@master
+
+      - name: Setup Python Environment
+        uses: ./.github/workflows/build
+        with:
+          environment: 'dev'
+          pythonVersion: '3.7'
+          functionAppPackagePath: '.'
+
+      - name: Deploy Azure Function Apps
+        uses: ./.github/workflows/deploy
+        with:
+          environment: 'dev'
+          functionAppName: 'teetimebooker-fa-prod'
+          functionAppPackagePath: '.'
