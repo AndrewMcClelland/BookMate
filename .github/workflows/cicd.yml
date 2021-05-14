@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI/CD
+name: CI/CD - Dev
 
 # Controls when the action will run. 
 on:
@@ -18,6 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: dev
     steps:
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@master
+        
       - name: Setup Python Environment
         uses: ./.github/workflows/build
         with:
