@@ -27,8 +27,10 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: echo "Branch=$GITHUB_REF EventName=$GITHUB_EVENT_NAME EventPath=$GITHUB_EVENT_PATH RequestFor=$GITHUB_ACTOR ActionPath=GITHUB_ACTION_PATH"
-      displayName: Build Reason
+    - name: 'Build Reason'
+      shell: bash
+      run: |
+        echo "Branch=$GITHUB_REF EventName=$GITHUB_EVENT_NAME EventPath=$GITHUB_EVENT_PATH RequestFor=$GITHUB_ACTOR ActionPath=GITHUB_ACTION_PATH"
 
     - name: Setup Python ${{ inputs.pythonVersion }} Environment
       uses: actions/setup-python@v1

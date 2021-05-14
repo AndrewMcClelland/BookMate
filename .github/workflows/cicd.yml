@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@master
-        
+
       - name: Setup Python Environment
         uses: ./.github/workflows/build
         with:
@@ -28,9 +28,9 @@ jobs:
           pythonVersion: '3.7'
           functionAppPackagePath: '.'
 
-      - name: Setup Python Environment
-        uses: ./.github/workflows/deploy
-        with:
-          environment: 'dev'
-          functionAppName: 'teetimebooker-fa-prod'
-          functionAppPackagePath: '.'
+      # - name: Deploy Azure Function Apps
+      #   uses: ./.github/workflows/deploy
+      #   with:
+      #     environment: 'dev'
+      #     functionAppName: 'teetimebooker-fa-prod'
+      #     functionAppPackagePath: '.'
