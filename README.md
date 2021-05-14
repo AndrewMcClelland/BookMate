@@ -5,6 +5,7 @@
 - [x] ConfigurationManager for PReferredTeeTimes and Smith Golf search settings
 - [ ] Feature flag to enable booking or not
 - [ ] Better error handling
+- [ ] Separate 'requirements.txt' for each Azure Function (modify pipeline and tasks.json when they use requirements.txt for pip install): https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-python#folder-structure
 - [x] Load AppSettings from KeyVault
 - [x] Logging
 - [ ] Break into multiple functions

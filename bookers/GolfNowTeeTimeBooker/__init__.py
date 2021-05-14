@@ -9,9 +9,8 @@ from opencensus.trace import config_integration
 from opencensus.trace.samplers import AlwaysOnSampler
 from opencensus.trace.tracer import Tracer
 
-from GolfNowGolfHandler import GolfNowGolfHandler
-from TwilioHandler import TwilioHandler
-
+from handlers.GolfNowGolfHandler import GolfNowGolfHandler
+from handlers.TwilioHandler import TwilioHandler
 
 def main(mytimer: func.TimerRequest) -> None:
 
