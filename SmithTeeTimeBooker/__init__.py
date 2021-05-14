@@ -51,7 +51,7 @@ def main(mytimer: func.TimerRequest) -> None:
                                         loginEndpoint=os.environ["Smith_Endpoint_Login"],
                                         searchTimesEndpoint=os.environ["Smith_Endpoint_SearchTimes"],
                                         submitCartEndpoint=os.environ["Smith_Endpoint_SubmitCart"],
-                                        isDevMode=os.environ["Smith_IsDevMode"] == "true",
+                                        bookTimeEnabled=os.environ["Smith_BookTeeTime"] == "true",
                                         twilioHandler=twilioHandler,
                                         logger=logger)
 

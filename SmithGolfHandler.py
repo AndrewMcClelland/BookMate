@@ -1,6 +1,7 @@
 import re
 import time
 import logging
+import platform
 from datetime import date, datetime, timedelta
 from urllib.parse import quote_plus
 from bs4 import BeautifulSoup
@@ -10,7 +11,7 @@ import requests
 from TwilioHandler import TwilioHandler
 
 class SmithGolfHandler:
-    def __init__(self, username: str, password: str, numberHoles: str, numberPlayers: str, preferredTeeTimeRanges: str, playerIdentifier: str, baseUrl: str, loginEndpoint: str, searchTimesEndpoint: str, submitCartEndpoint: str, isDevMode: bool, twilioHandler: TwilioHandler, logger):
+    def __init__(self, username: str, password: str, numberHoles: str, numberPlayers: str, preferredTeeTimeRanges: str, playerIdentifier: str, baseUrl: str, loginEndpoint: str, searchTimesEndpoint: str, submitCartEndpoint: str, bookTimeEnabled: bool, twilioHandler: TwilioHandler, logger):
         self.username = username
         self.password = password
         self.playerIdentifier = playerIdentifier
@@ -18,7 +19,7 @@ class SmithGolfHandler:
         self.loginUrl = baseUrl + loginEndpoint
         self.searchTimesUrl = baseUrl + searchTimesEndpoint
         self.submitCartUrl = baseUrl + submitCartEndpoint
-        self.isDevMode = isDevMode
+        self.bookTimeEnabled = bookTimeEnabled
         self.twilioHandler = twilioHandler
         self.logger = logger
 
@@ -30,9 +31,11 @@ class SmithGolfHandler:
         preferredTeeTimeBuckets = {}
         timePriority = 1
 
+        teeTimeFormat = "%I:%M %p"
+
         for preferredTeeTimeRange in self.preferredTeeTimeRanges:
-            preferredFirstTime = preferredTeeTimeRange.split('-')[0]
-            preferredLastTime = preferredTeeTimeRange.split('-')[1]
+            preferredFirstTime = datetime.strptime(preferredTeeTimeRange.split('-')[0], teeTimeFormat)
+            preferredLastTime = datetime.strptime(preferredTeeTimeRange.split('-')[1], teeTimeFormat)
             earlierPreferredTime = min(preferredFirstTime, preferredLastTime)
             laterPreferredTime = max(preferredFirstTime, preferredLastTime)
             ascendingTimePreference = preferredFirstTime < preferredLastTime
@@ -49,19 +52,22 @@ class SmithGolfHandler:
 
             timePriority += 1
 
-        
         for availableTeeTime in availableTeeTimes:
-            # Convert Available tee time format (1:30 pm) to 24h time (13:30)
-            militaryTeeTime = datetime.strptime(availableTeeTime, "%I:%M %p").strftime("%H:%M")
+            # Convert string to datetme object
+            teeTime = datetime.strptime(availableTeeTime, teeTimeFormat)
 
             # Assign available tee time to preference bucket based on preferred tee time ranges
             for priorityKey in preferredTeeTimeBuckets:
-                if preferredTeeTimeBuckets[priorityKey]['earlierPreferredTime'] <= militaryTeeTime and militaryTeeTime <= preferredTeeTimeBuckets[priorityKey]['laterPreferredTime']:
-                    sortedAvailableTeeTimeBuckets[priorityKey].append(militaryTeeTime)
-
+                if preferredTeeTimeBuckets[priorityKey]['earlierPreferredTime'] <= teeTime and teeTime <= preferredTeeTimeBuckets[priorityKey]['laterPreferredTime']:
+                    sortedAvailableTeeTimeBuckets[priorityKey].append(teeTime)
+        
+        # To remove padded leading 0 on datetime: use '#' for Windows and '-' for Linux
+        isWindows = platform.system() == "Windows"
+        printTeeTimeFormat = "%{0}I:%M %p".format("#" if isWindows else '-')
         for priority in range(1, timePriority):
             currPriorityTeeTimes = sortedAvailableTeeTimeBuckets[priority]
-            sortedAvailableTeeTimes.extend(sorted(currPriorityTeeTimes, reverse=not preferredTeeTimeBuckets[priority]['ascendingTimePreference']))
+            sortedPriorityTeeTimes = sorted(currPriorityTeeTimes, reverse=not preferredTeeTimeBuckets[priority]['ascendingTimePreference'])
+            sortedAvailableTeeTimes.extend([teeTime.strftime(printTeeTimeFormat).lower() for teeTime in sortedPriorityTeeTimes])
 
         return sortedAvailableTeeTimes
 
@@ -125,11 +131,11 @@ class SmithGolfHandler:
 
         # Booking available tee time in order of preferred times
         for teeTime in sortedAvailableTeeTimes:
-            if (teeTime in availableTeeTimesDict) and (availableTeeTimesDict[teeTime]['IsAddToCartAvailable'] == True) and (availableTeeTimesDict[teeTime]['Holes'] == '18 (Front)') and (availableTeeTimesDict[teeTime]['Course'] == 'H. Smith Richardson Golf Course') and (availableTeeTimesDict[teeTime]['OpenSlots'] == '4'):
+            if (availableTeeTimesDict[teeTime]['IsAddToCartAvailable'] == True) and (availableTeeTimesDict[teeTime]['Holes'] == '18 (Front)') and (availableTeeTimesDict[teeTime]['Course'] == 'H. Smith Richardson Golf Course') and (availableTeeTimesDict[teeTime]['OpenSlots'] == '4'):
 
                 self.logger.info("SmithGolfHandler.BookSmithTeeTimes_BookTimeAttempt", extra={'custom_dimensions': {'Date': availableTeeTimesDict[teeTime]['Date'], 'TeeTime': teeTime}})
 
-                if not self.isDevMode:
+                if self.bookTimeEnabled:
                     # Add tee time to the cart
                     self.logger.info("SmithGolfHandler.BookSmithTeeTimes_AddTeeTimeToCart", extra={'custom_dimensions': {'Date': availableTeeTimesDict[teeTime]['Date'], 'TeeTime': teeTime}})
 
@@ -162,7 +168,7 @@ class SmithGolfHandler:
                     if bookingConfirmed:
                         self.logger.info("SmithGolfHandler.BookSmithTeeTimes_BookTimeSuccess", extra={'custom_dimensions': {'Date': availableTeeTimesDict[teeTime]['Date'], 'TeeTime': teeTime}})
                         successMessage = "{} {} - booked {} teetime on {} at {} for {} people.".format(today.strftime('%m/%d/%Y'), datetime.now().strftime("%H:%M:%S"), teeTime, availableTeeTimesDict[teeTime]['Date'], availableTeeTimesDict[teeTime]['Course'], availableTeeTimesDict[teeTime]['OpenSlots'])
-                        self.twilioHandler.sendSms(successMessage, self.isDevMode)
+                        self.twilioHandler.sendSms(successMessage, not self.bookTimeEnabled)
                         self.logger.info("SmithGolfHandler.BookSmithTeeTimes_TwilioSuccessSent")
                         break
                     # Failed to book Tee Time, retrying with next preferred time
@@ -172,7 +178,7 @@ class SmithGolfHandler:
                         self.twilioHandler.sendSms(failMessage, True)
                         self.logger.info("SmithGolfHandler.BookSmithTeeTimes_TwilioFailSent")
 
-                if self.isDevMode:
+                if not self.bookTimeEnabled:
                     break
 
         self.logger.info("SmithGolfHandler.BookSmithTeeTimes_End")
