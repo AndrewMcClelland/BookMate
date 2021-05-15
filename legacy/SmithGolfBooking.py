@@ -13,7 +13,7 @@ from twilio.rest import Client
 
 config = configparser.ConfigParser()
 config.read("config.ini")
-timeToRun = "05:00"
+timeToRun = "05:00:30"
 
 def sendSms(body, sendToMeOnly = False):
     account_sid = config['Twilio']['accountSid']
