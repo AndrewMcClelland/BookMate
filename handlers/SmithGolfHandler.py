@@ -121,7 +121,14 @@ class SmithGolfHandler(GolfHandler):
                         break
                     # Failed to book Tee Time, retrying with next preferred time
                     else:
-                        self.logger.info("SmithGolfHandler.BookSmithTeeTimes_BookTimeFail", extra={'custom_dimensions': {'Date': availableTeeTimesDict[teeTime]['Date'], 'TeeTime': teeTime}})
+                        try:
+                            parsedSubmitCart = BeautifulSoup(submitCartResponse.text)
+                            parsedSmithError = parsedSubmitCart.find_all('div', attrs={'id':'processingprompts_ruletext'})
+                            smithErrorText = '||'.join([str(errorText.text) for errorText in parsedSmithError])
+                        except:
+                            smithErrorText = "Couldn't retrieve Smith Error Prompts."
+
+                        self.logger.info("SmithGolfHandler.BookSmithTeeTimes_BookTimeFail", extra={'custom_dimensions': {'Date': availableTeeTimesDict[teeTime]['Date'], 'TeeTime': teeTime, 'SmithErrorText': smithErrorText}})
                         failMessage = "{} {} - FAILED to book {} teetime on {} at {} for {} people. Trying next preferred teetime...".format(today.strftime('%m/%d/%Y'), datetime.now().strftime("%H:%M:%S"), teeTime, availableTeeTimesDict[teeTime]['Date'], availableTeeTimesDict[teeTime]['Course'], availableTeeTimesDict[teeTime]['OpenSlots'])
                         self.twilioHandler.sendSms(failMessage, True)
                         self.logger.info("SmithGolfHandler.BookSmithTeeTimes_TwilioFailSent")
