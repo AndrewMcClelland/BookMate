@@ -1,11 +1,11 @@
 import platform
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from handlers.TwilioHandler import TwilioHandler
 
 class GolfHandler:
-    def __init__(self, numberHoles: str, numberPlayers: str, preferredTeeTimeRanges: str, baseUrl: str, bookTimeEnabled: bool, twilioHandler: TwilioHandler, logger):
+    def __init__(self, numberHoles: str, numberPlayers: str, preferredTeeTimeRanges: str, daysToBookInAdvance: str, baseUrl: str, bookTimeEnabled: bool, twilioHandler: TwilioHandler, logger):
         self.numberHoles = numberHoles
         self.numberPlayers = numberPlayers
         self.preferredTeeTimeRanges = preferredTeeTimeRanges.split(',')
@@ -13,6 +13,11 @@ class GolfHandler:
         self.bookTimeEnabled = bookTimeEnabled
         self.twilioHandler = twilioHandler
         self.logger = logger
+
+        # Book for date 'daysToBookInAdvance' days from today
+        today = datetime.now()
+        dayInAWeek = today + timedelta(days=int(daysToBookInAdvance))
+        self.dateToBook = dayInAWeek.strftime('%m/%d/%Y')
 
         self.session = requests.Session()
     

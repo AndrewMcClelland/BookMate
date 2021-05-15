@@ -28,6 +28,7 @@ def main(mytimer: func.TimerRequest) -> None:
     numberHoles = appConfigClient.get_configuration_setting(key="Smith:NumberHoles", label="prod").value
     numberPlayers = appConfigClient.get_configuration_setting(key="Smith:NumberPlayers", label="prod").value
     preferredTeeTimeRanges = appConfigClient.get_configuration_setting(key="Smith:PreferredTeeTimeRanges", label="prod").value
+    daysToBookInAdvance = appConfigClient.get_configuration_setting(key="Smith:DaysToBookInAdvance", label="prod").value
 
     # Get Feature Flag
     bookTimeEnabled = appConfigClient.get_configuration_setting(key=".appconfig.featureflag/BookTeeTime", label="prod")
@@ -43,6 +44,7 @@ def main(mytimer: func.TimerRequest) -> None:
     smithGolfHandler = SmithGolfHandler(numberHoles=numberHoles,
                                         numberPlayers=numberPlayers,
                                         preferredTeeTimeRanges=preferredTeeTimeRanges,
+                                        daysToBookInAdvance=daysToBookInAdvance,
                                         username=os.environ["Smith_Username"],
                                         password=os.environ["Smith_Password"],
                                         playerIdentifier=os.environ["Smith_PlayerIdentifier"],

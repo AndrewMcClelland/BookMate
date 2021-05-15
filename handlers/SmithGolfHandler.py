@@ -2,7 +2,7 @@ import re
 import time
 import logging
 import requests
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 from urllib.parse import quote_plus
 from bs4 import BeautifulSoup
 
@@ -10,8 +10,8 @@ from handlers.GolfHandler import GolfHandler
 from handlers.TwilioHandler import TwilioHandler
 
 class SmithGolfHandler(GolfHandler):
-    def __init__(self, username: str, password: str, numberHoles: str, numberPlayers: str, preferredTeeTimeRanges: str, playerIdentifier: str, baseUrl: str, loginEndpoint: str, searchTimesEndpoint: str, submitCartEndpoint: str, bookTimeEnabled: bool, twilioHandler: TwilioHandler, logger):
-        super().__init__(numberHoles=numberHoles, numberPlayers=numberPlayers, preferredTeeTimeRanges=preferredTeeTimeRanges, baseUrl=baseUrl, bookTimeEnabled=bookTimeEnabled, twilioHandler=twilioHandler, logger=logger)
+    def __init__(self, username: str, password: str, numberHoles: str, numberPlayers: str, preferredTeeTimeRanges: str, daysToBookInAdvance: str, playerIdentifier: str, baseUrl: str, loginEndpoint: str, searchTimesEndpoint: str, submitCartEndpoint: str, bookTimeEnabled: bool, twilioHandler: TwilioHandler, logger):
+        super().__init__(numberHoles=numberHoles, numberPlayers=numberPlayers, preferredTeeTimeRanges=preferredTeeTimeRanges, daysToBookInAdvance=daysToBookInAdvance, baseUrl=baseUrl, bookTimeEnabled=bookTimeEnabled, twilioHandler=twilioHandler, logger=logger)
 
         self.username = username
         self.password = password
@@ -22,11 +22,6 @@ class SmithGolfHandler(GolfHandler):
 
     def BookTeeTimes(self):
         self.logger.info("SmithGolfHandler.BookSmithTeeTimes_Start")
-
-        # Book for date 7 days from today
-        today = datetime.now()
-        dayInAWeek = today + timedelta(days=7)
-        dayInAWeekString = dayInAWeek.strftime('%m/%d/%Y')
 
         # Login to site
         self.logger.info("SmithGolfHandler.BookSmithTeeTimes_Login")
@@ -43,7 +38,7 @@ class SmithGolfHandler(GolfHandler):
         # Search for teetimes and store in dictionary
         self.logger.info("SmithGolfHandler.BookSmithTeeTimes_SearchTeeTimes")
 
-        searchDate = quote_plus(dayInAWeekString)
+        searchDate = quote_plus(self.dateToBook)
         searchTime = quote_plus("06:00 AM")
 
         searchTimesResponse = self.session.get(url=self.searchTimesUrl.format(self.numberPlayers, searchDate, searchTime, self.numberHoles))
@@ -112,6 +107,7 @@ class SmithGolfHandler(GolfHandler):
                     except:
                         bookingConfirmed = False
 
+                    today = datetime.now()
                     # Successfully booked Tee time
                     if bookingConfirmed:
                         self.logger.info("SmithGolfHandler.BookSmithTeeTimes_BookTimeSuccess", extra={'custom_dimensions': {'Date': availableTeeTimesDict[teeTime]['Date'], 'TeeTime': teeTime}})
