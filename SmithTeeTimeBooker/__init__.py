@@ -30,7 +30,7 @@ def main(mytimer: func.TimerRequest) -> None:
     preferredTeeTimeRanges = appConfigClient.get_configuration_setting(key="Smith:PreferredTeeTimeRanges", label="prod").value
 
     # Get Feature Flag
-    # enableBookingTeeTime = ???
+    bookTimeEnabled = appConfigClient.get_configuration_setting(key=".appconfig.featureflag/BookTeeTime", label="prod")
 
     logger.info("SmithTeeTimeBooker_Start")
     
