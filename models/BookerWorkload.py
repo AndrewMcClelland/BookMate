@@ -1,5 +1,5 @@
-import enum
+from enum import Enum
 
-class BookerWorkload(enum.Enum):
-   Smith = 1,
+class BookerWorkload(str, Enum):
+   HSmithRichardson = 1,
    GolfNow = 2

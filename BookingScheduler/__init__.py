@@ -7,8 +7,11 @@ from opencensus.ext.azure.log_exporter import AzureLogHandler
 from opencensus.trace import config_integration
 from opencensus.trace.samplers import AlwaysOnSampler
 from opencensus.trace.tracer import Tracer
+from datetime import datetime
+from croniter import croniter
 
 from adapters.TableStorageAdapter import TableStorageAdapter
+from adapters.ServiceBusTopicAdapter import ServiceBusTopicAdapter
 from services.BookingTableStorageService import BookingTableStorageService
 from models.BookerWorkload import BookerWorkload
 from models.tableEntities.BookingEntity import BookingEntity
@@ -27,12 +30,23 @@ def main(mytimer: func.TimerRequest) -> None:
     logger.info("BookingScheduler_Start")
 
     tableStorageAdapter = TableStorageAdapter(accountName=os.environ["AzureStorage_AccountName"],
-                                                             accountKey=os.environ["AzureStorage_AccountKey"])
+                                              accountKey=os.environ["AzureStorage_AccountKey"])
 
     bookingTableStorageService = BookingTableStorageService(tableStorageAdapter)
 
+    bookingTopic = ServiceBusTopicAdapter(connectionString=os.environ["AzureServiceBus_BookingTopic_ConnectionString_Send"],
+                                          topicName="bookingtopic")
+
     try:
         bookingEntities = bookingTableStorageService.GetBookingEntities()
+
+        # HOW TO ENSURE THAT DUPLICATE BOOKINGS ARENT ENQUEUED FOR THE SAME TIME???????????????????
+        for bookingEntity in bookingEntities:
+            messageProperties ={"BookerWorkload": bookingEntity.BookerWorkload.name}
+            cron = croniter(bookingEntity.CronSchedule)
+            enqueueTime = cron.get_next(datetime)
+            bookingTopic.SendMessage(bookingEntity, messageProperties, None)
+
     except Exception as e:
         logger.exception(f"BookingScheduler_Error : {e}")
 

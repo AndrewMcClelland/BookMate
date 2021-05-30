@@ -5,8 +5,10 @@
 azure-functions
 azure-appconfiguration
 azure-cosmosdb-table
+azure-servicebus
 requests
 beautifulsoup4
 twilio
+croniter
 opencensus-ext-azure
 opencensus-ext-logging
