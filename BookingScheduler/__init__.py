@@ -32,7 +32,7 @@ def main(mytimer: func.TimerRequest) -> None:
     bookingTableStorageService = BookingTableStorageService(tableStorageAdapter)
 
     try:
-        bookingTableStorageService.GetBookingEntity(BookerWorkload.Smith, "test")
+        bookingEntities = bookingTableStorageService.GetBookingEntities()
     except Exception as e:
         logger.exception(f"BookingScheduler_Error : {e}")
 
