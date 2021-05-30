@@ -12,7 +12,7 @@ from selenium.webdriver.support.ui import Select
 from twilio.rest import Client
 
 config = configparser.ConfigParser()
-config.read("config.ini")
+config.read('./legacy/config.ini')
 timeToRun = "05:00:30"
 
 def sendSms(body, sendToMeOnly = False):

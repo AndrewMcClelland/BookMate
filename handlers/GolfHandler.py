@@ -16,16 +16,20 @@ class GolfHandler:
 
         # Book for date 'daysToBookInAdvance' days from today
         today = datetime.now()
-        dayInAWeek = today + timedelta(days=int(daysToBookInAdvance))
-        self.dateToBook = dayInAWeek.strftime('%m/%d/%Y')
+        self.dateToBook = today + timedelta(days=int(daysToBookInAdvance))
 
         self.session = requests.Session()
     
     def _SortAvailableTeeTimes(self, availableTeeTimes):
+        if not availableTeeTimes:
+            return []
+
         sortedAvailableTeeTimes = []
         sortedAvailableTeeTimeBuckets = {}
         preferredTeeTimeBuckets = {}
         timePriority = 1
+
+        isUpperCaseTimeMeridian = availableTeeTimes[0].isupper()
 
         teeTimeFormat = "%I:%M %p"
 
@@ -65,7 +69,7 @@ class GolfHandler:
         for priority in range(1, timePriority):
             currPriorityTeeTimes = sortedAvailableTeeTimeBuckets[priority]
             sortedPriorityTeeTimes = sorted(currPriorityTeeTimes, reverse=not preferredTeeTimeBuckets[priority]['ascendingTimePreference'])
-            sortedAvailableTeeTimes.extend([teeTime.strftime(printTeeTimeFormat).lower() for teeTime in sortedPriorityTeeTimes])
+            sortedAvailableTeeTimes.extend([teeTime.strftime(printTeeTimeFormat).upper() if isUpperCaseTimeMeridian else teeTime.strftime(printTeeTimeFormat).lower() for teeTime in sortedPriorityTeeTimes])
 
         return sortedAvailableTeeTimes
     

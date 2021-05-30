@@ -38,7 +38,7 @@ class SmithGolfHandler(GolfHandler):
         # Search for teetimes and store in dictionary
         self.logger.info("SmithGolfHandler.BookSmithTeeTimes_SearchTeeTimes")
 
-        searchDate = quote_plus(self.dateToBook)
+        searchDate = quote_plus(self.dateToBook.strftime('%m/%d/%Y'))
         searchTime = quote_plus("06:00 AM")
 
         searchTimesResponse = self.session.get(url=self.searchTimesUrl.format(self.numberPlayers, searchDate, searchTime, self.numberHoles))
@@ -117,6 +117,7 @@ class SmithGolfHandler(GolfHandler):
                         break
                     # Failed to book Tee Time, retrying with next preferred time
                     else:
+                        # Try to parse Smith Processing error information
                         try:
                             parsedSubmitCart = BeautifulSoup(submitCartResponse.text)
                             parsedSmithError = parsedSubmitCart.find_all('div', attrs={'id':'processingprompts_ruletext'})
