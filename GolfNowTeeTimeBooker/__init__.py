@@ -41,14 +41,16 @@ def main(mytimer: func.TimerRequest) -> None:
                                   fromNumber=os.environ["Twilio_FromNumber"],
                                   logger=logger)
 
-    golfNowGolfHandler = GolfNowGolfHandler(numberHoles=numberHoles,
+    golfNowGolfHandler = GolfNowGolfHandler(courseId=os.environ["GolfNow_CourseId"],
+                                        numberHoles=numberHoles,
                                         numberPlayers=numberPlayers,
                                         preferredTeeTimeRanges=preferredTeeTimeRanges,
                                         daysToBookInAdvance=daysToBookInAdvance,
-                                        username=os.environ["Smith_Username"],
-                                        password=os.environ["Smith_Password"],
-                                        baseUrl=os.environ["Smith_Url_Base"],
-                                        bookTimeEnabled=os.environ["Smith_BookTeeTime"] == "true",
+                                        username=os.environ["GolfNow_Username"],
+                                        password=os.environ["GolfNow_Password"],
+                                        baseUrl=os.environ["GolfNow_Url_Base"],
+                                        bookingEndpoint=os.environ["GolfNow_Endpoint_Booking"],
+                                        bookTimeEnabled=os.environ["GolfNow_BookTeeTime"] == "true",
                                         twilioHandler=twilioHandler,
                                         logger=logger)
 
