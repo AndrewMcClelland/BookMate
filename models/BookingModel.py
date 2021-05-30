@@ -1,6 +1,6 @@
 from models.BookerWorkload import BookerWorkload
 
-class BookingEntity(Entity):
+class BookingModel:
     def __init__(self, bookerWorkload: BookerWorkload, username: str, cronSchedule: str, isReptitive: bool, preferredTimes: str, daysToBookInAdvance: int, numberPlayers: int, numberHoles: int):
         super().__init__()
 

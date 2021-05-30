@@ -4,6 +4,7 @@
 
 azure-functions
 azure-appconfiguration
+azure-cosmosdb-table
 requests
 beautifulsoup4
 twilio
