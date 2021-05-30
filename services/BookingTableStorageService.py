@@ -16,20 +16,20 @@ class BookingTableStorageService:
         return BookingModel(bookerWorkload=BookerWorkload[entity.BookerWorkload],
                             username=entity.username,
                             cronSchedule=entity.CronSchedule,
-                            isReptitive=entity.IsReptitive,
+                            isRepetitive=entity.IsRepetitive,
                             preferredTimes=entity.PreferredTimes,
-                            daysToBookInAdvance=entity.DaysToBookInAdvance,
-                            numberPlayers=entity.NumberPlayers,
-                            numberHoles=entity.NumberHoles)
+                            daysToBookInAdvance=entity.DaysToBookInAdvance.value,
+                            numberPlayers=entity.NumberPlayers.value,
+                            numberHoles=entity.NumberHoles.value)
     
     def GetBookingEntities(self) -> List[BookingModel]:
         entities = self.bookingTableRepository.GetEntities(self.tableName)
 
         return [BookingModel(bookerWorkload=BookerWorkload[entity.BookerWorkload],
-                            username=entity.username,
+                            username=entity.Username,
                             cronSchedule=entity.CronSchedule,
-                            isReptitive=entity.IsReptitive,
+                            isRepetitive=entity.IsRepetitive,
                             preferredTimes=entity.PreferredTimes,
-                            daysToBookInAdvance=entity.DaysToBookInAdvance,
-                            numberPlayers=entity.NumberPlayers,
-                            numberHoles=entity.NumberHoles) for entity in entities]
+                            daysToBookInAdvance=entity.DaysToBookInAdvance.value,
+                            numberPlayers=entity.NumberPlayers.value,
+                            numberHoles=entity.NumberHoles.value) for entity in entities]
