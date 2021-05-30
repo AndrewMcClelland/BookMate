@@ -9,11 +9,32 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "Attach to Python Functions",
+            "name": "Attach to ALL Python Functions",
             "type": "python",
             "request": "attach",
             "port": 9091,
             "preLaunchTask": "func: host start"
-        }
+        },
+        {
+            "name": "Attach to Python Function: BookingScheduler",
+            "type": "python",
+            "request": "attach",
+            "port": 9091,
+            "preLaunchTask": "func: host start --functions BookingScheduler"
+        },
+        {
+            "name": "Attach to Python Function: GolfNowTeeTimeBooker",
+            "type": "python",
+            "request": "attach",
+            "port": 9091,
+            "preLaunchTask": "func: host start --functions GolfNowTeeTimeBooker"
+        },
+        {
+            "name": "Attach to Python Function: SmithTeeTimeBooker",
+            "type": "python",
+            "request": "attach",
+            "port": 9091,
+            "preLaunchTask": "func: host start --functions SmithTeeTimeBooker"
+        },
     ]
 }

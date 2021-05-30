@@ -9,6 +9,27 @@
 			"dependsOn": "pipInstall"
 		},
 		{
+			"type": "func",
+			"command": "host start --functions BookingScheduler",
+			"problemMatcher": "$func-python-watch",
+			"isBackground": true,
+			"dependsOn": "pipInstall"
+		},
+		{
+			"type": "func",
+			"command": "host start --functions GolfNowTeeTimeBooker",
+			"problemMatcher": "$func-python-watch",
+			"isBackground": true,
+			"dependsOn": "pipInstall"
+		},
+		{
+			"type": "func",
+			"command": "host start --functions SmithTeeTimeBooker",
+			"problemMatcher": "$func-python-watch",
+			"isBackground": true,
+			"dependsOn": "pipInstall"
+		},
+		{
 			"label": "pipInstall",
 			"type": "shell",
 			"osx": {
