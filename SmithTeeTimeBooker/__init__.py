@@ -25,16 +25,11 @@ def main(message: func.ServiceBusMessage):
         connection_string=os.environ["APPLICATIONINSIGHTS_CONNECTION_STRING"])
     )
 
-    messageContentType = message.content_type
     messageBody = message.get_body().decode("utf-8")
     messageBookingModel = BookingModel(**json.loads(messageBody))
 
     # Setup IAM for FunctionApp - https://docs.microsoft.com/en-us/azure/azure-app-configuration/howto-integrate-azure-managed-service-identity?tabs=core2x
     appConfigClient = AzureAppConfigurationClient.from_connection_string(os.getenv('AppConfigConnectionString'))
-    numberHoles = appConfigClient.get_configuration_setting(key="Smith:NumberHoles", label="prod").value
-    numberPlayers = appConfigClient.get_configuration_setting(key="Smith:NumberPlayers", label="prod").value
-    preferredTeeTimeRanges = appConfigClient.get_configuration_setting(key="Smith:PreferredTeeTimeRanges", label="prod").value
-    daysToBookInAdvance = appConfigClient.get_configuration_setting(key="Smith:DaysToBookInAdvance", label="prod").value
 
     # Get Feature Flag
     bookTimeEnabled = appConfigClient.get_configuration_setting(key=".appconfig.featureflag/BookTeeTime", label="prod")
@@ -47,10 +42,10 @@ def main(message: func.ServiceBusMessage):
                                   fromNumber=os.environ["Twilio_FromNumber"],
                                   logger=logger)
 
-    smithGolfHandler = SmithGolfHandler(numberHoles=numberHoles,
-                                        numberPlayers=numberPlayers,
-                                        preferredTeeTimeRanges=preferredTeeTimeRanges,
-                                        daysToBookInAdvance=daysToBookInAdvance,
+    smithGolfHandler = SmithGolfHandler(numberHoles=messageBookingModel.numberHoles,
+                                        numberPlayers=messageBookingModel.numberPlayers,
+                                        preferredTeeTimeRanges=messageBookingModel.preferredTeeTimeRanges,
+                                        daysToBookInAdvance=messageBookingModel.daysToBookInAdvance,
                                         username=os.environ["Smith_Username"],
                                         password=os.environ["Smith_Password"],
                                         playerIdentifier=os.environ["Smith_PlayerIdentifier"],

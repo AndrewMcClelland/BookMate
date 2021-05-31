@@ -31,10 +31,6 @@ def main(message: func.ServiceBusMessage):
 
     # Setup IAM for FunctionApp - https://docs.microsoft.com/en-us/azure/azure-app-configuration/howto-integrate-azure-managed-service-identity?tabs=core2x
     appConfigClient = AzureAppConfigurationClient.from_connection_string(os.getenv('AppConfigConnectionString'))
-    numberHoles = appConfigClient.get_configuration_setting(key="GolfNow:NumberHoles", label="prod").value
-    numberPlayers = appConfigClient.get_configuration_setting(key="GolfNow:NumberPlayers", label="prod").value
-    preferredTeeTimeRanges = appConfigClient.get_configuration_setting(key="GolfNow:PreferredTeeTimeRanges", label="prod").value
-    daysToBookInAdvance = appConfigClient.get_configuration_setting(key="GolfNow:DaysToBookInAdvance", label="prod").value
 
     # Get Feature Flag
     bookTimeEnabled = appConfigClient.get_configuration_setting(key=".appconfig.featureflag/BookTeeTime", label="prod")
@@ -48,10 +44,10 @@ def main(message: func.ServiceBusMessage):
                                   logger=logger)
 
     golfNowGolfHandler = GolfNowGolfHandler(courseId=os.environ["GolfNow_CourseId"],
-                                        numberHoles=numberHoles,
-                                        numberPlayers=numberPlayers,
-                                        preferredTeeTimeRanges=preferredTeeTimeRanges,
-                                        daysToBookInAdvance=daysToBookInAdvance,
+                                        numberHoles=messageBookingModel.numberHoles,
+                                        numberPlayers=messageBookingModel.numberPlayers,
+                                        preferredTeeTimeRanges=messageBookingModel.preferredTeeTimeRanges,
+                                        daysToBookInAdvance=messageBookingModel.daysToBookInAdvance,
                                         username=os.environ["GolfNow_Username"],
                                         password=os.environ["GolfNow_Password"],
                                         baseUrl=os.environ["GolfNow_Url_Base"],
