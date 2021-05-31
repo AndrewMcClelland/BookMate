@@ -45,7 +45,7 @@ def main(mytimer: func.TimerRequest) -> None:
             messageProperties ={"BookerWorkload": bookingEntity.BookerWorkload.name}
             cron = croniter(bookingEntity.CronSchedule)
             enqueueTime = cron.get_next(datetime)
-            bookingTopic.SendMessage(bookingEntity, messageProperties, None)
+            bookingTopic.SendMessage(bookingEntity, messageProperties, enqueueTime)
 
     except Exception as e:
         logger.exception(f"BookingScheduler_Error : {e}")
