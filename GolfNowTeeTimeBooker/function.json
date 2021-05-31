@@ -1,11 +1,14 @@
 {
   "scriptFile": "__init__.py",
+  "entryPoint": "main",
   "bindings": [
     {
-      "name": "mytimer",
-      "type": "timerTrigger",
+      "name": "message",
+      "type": "serviceBusTrigger",
       "direction": "in",
-      "schedule": "0 0 9 * * Sat,Sun"
+      "topicName": "bookingtopic",
+      "subscriptionName": "GolfNow",
+      "connection": "AzureServiceBus_BookingTopic_ConnectionString_Listen"
     }
   ]
 }

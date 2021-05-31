@@ -2,6 +2,7 @@ import datetime
 import logging
 import os
 import uuid
+import json
 import azure.functions as func
 from azure.appconfiguration import AzureAppConfigurationClient
 from opencensus.ext.azure.log_exporter import AzureLogHandler
@@ -11,8 +12,9 @@ from opencensus.trace.tracer import Tracer
 
 from handlers.SmithGolfHandler import SmithGolfHandler
 from handlers.TwilioHandler import TwilioHandler
+from models.BookingModel import BookingModel
 
-def main(mytimer: func.TimerRequest) -> None:
+def main(message: func.ServiceBusMessage):
 
     config_integration.trace_integrations(['logging'])
     logging.basicConfig(format='%(asctime)s traceId=%(traceId)s spanId=%(spanId)s %(message)s')
@@ -22,6 +24,10 @@ def main(mytimer: func.TimerRequest) -> None:
     logger.addHandler(AzureLogHandler(
         connection_string=os.environ["APPLICATIONINSIGHTS_CONNECTION_STRING"])
     )
+
+    messageContentType = message.content_type
+    messageBody = message.get_body().decode("utf-8")
+    messageBookingModel = BookingModel(**json.loads(messageBody))
 
     # Setup IAM for FunctionApp - https://docs.microsoft.com/en-us/azure/azure-app-configuration/howto-integrate-azure-managed-service-identity?tabs=core2x
     appConfigClient = AzureAppConfigurationClient.from_connection_string(os.getenv('AppConfigConnectionString'))

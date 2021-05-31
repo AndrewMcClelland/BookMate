@@ -41,6 +41,7 @@ def main(mytimer: func.TimerRequest) -> None:
         bookingEntities = bookingTableStorageService.GetBookingEntities()
 
         # HOW TO ENSURE THAT DUPLICATE BOOKINGS ARENT ENQUEUED FOR THE SAME TIME???????????????????
+        # Service Bus Duplicate Detection Time Window???
         for bookingEntity in bookingEntities:
             messageProperties ={"BookerWorkload": bookingEntity.BookerWorkload.name}
             cron = croniter(bookingEntity.CronSchedule)
