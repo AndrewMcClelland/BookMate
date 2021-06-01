@@ -38,15 +38,18 @@ def main(mytimer: func.TimerRequest) -> None:
                                           topic_name="bookingtopic")
 
     try:
-        booking_entities = booking_table_storage_service.get_booking_entities()
+        # Get all enabled and unscheduled bookings from table and send them downstream to appropriate bookingtopic subscription with configured scheduled enqueue time
+        booking_entities = booking_table_storage_service.get_enabled_unscheduled_booking_entities()
 
-        # HOW TO ENSURE THAT DUPLICATE BOOKINGS ARENT ENQUEUED FOR THE SAME TIME???????????????????
-        # Service Bus Duplicate Detection Time Window???
         for booking_entity in booking_entities:
             message_properties = {"BookerWorkload": booking_entity.booker_workload.name}
             cron = croniter(booking_entity.cron_schedule)
             enqueue_time = cron.get_next(datetime)
             booking_topic.send_message(booking_entity, message_properties, enqueue_time)
+
+        # Mark entities as scheduled to run so that next time BookingScheduler runs it doesn't try to queue same booking again
+        if booking_entities:
+            booking_table_storage_service.set_scheduled_entities(booking_entities)
 
     except Exception as e:
         logger.exception(f"BookingScheduler_Error : {e}")

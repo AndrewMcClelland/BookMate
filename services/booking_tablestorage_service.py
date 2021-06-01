@@ -18,29 +18,56 @@ class BookingTableStorageService:
     def get_booking_entities(self) -> List[BookingModel]:
         entities = self.booking_table_repository.get_all_entities(self.table_name)
 
-        return self.__convert_entities_to_model__(entities)
+        return self.__convert_entities_to_models__(entities)
 
-    def get_enabled_booking_entities(self) -> List[BookingModel]:
-        enabled_entities_filter = "is_enabled eq 'true'"
+    def get_enabled_unscheduled_booking_entities(self) -> List[BookingModel]:
+        enabled_entities_filter = "is_enabled eq true and is_next_run_scheduled eq false"
         entities = self.booking_table_repository.get_all_entities(self.table_name, enabled_entities_filter)
 
-        return self.__convert_entities_to_model__(entities)
+        return self.__convert_entities_to_models__(entities)
 
-    def __convert_entity_to_model__(self, entity: BookingEntity) -> List[BookingModel]:
+    def set_scheduled_entities(self, models: List[BookingModel]) -> None:
+        entities = self.__convert_models_to_entities__(models)
+
+        for entity in entities:
+            entity.is_next_run_scheduled = True
+
+        self.booking_table_repository.insert_entities(self.table_name, entities)
+
+    def __convert_entity_to_model__(self, entity: BookingEntity) -> BookingModel:
         return BookingModel(booker_workload=BookerWorkload[entity.booker_workload],
                             username=entity.username,
                             cron_schedule=entity.cron_schedule,
                             is_repetitive=entity.is_repetitive,
                             preferred_times=entity.preferred_times,
-                            days_to_book_in_advance=entity.days_to_book_in_advance.value,
-                            number_players=entity.number_players.value,
-                            number_holes=entity.number_holes.value,
+                            days_to_book_in_advance=entity.days_to_book_in_advance,
+                            number_players=entity.number_players,
+                            number_holes=entity.number_holes,
                             is_enabled=entity.is_enabled,
-                            is_next_run_schedlued=entity.is_next_run_schedlued )
+                            is_next_run_scheduled=entity.is_next_run_scheduled )
 
-    def __convert_entities_to_model__(self, entities: List[BookingEntity]) -> List[BookingModel]:
+    def __convert_entities_to_models__(self, entities: List[BookingEntity]) -> List[BookingModel]:
         models = []
         for entity in entities:
             models.append(self.__convert_entity_to_model__(entity))
 
         return models
+
+    def __convert_model_to_entity__(self, model: BookingModel) -> BookingEntity:
+        return BookingEntity(booker_workload=model.booker_workload.name,
+                            username=model.username,
+                            cron_schedule=model.cron_schedule,
+                            is_repetitive=model.is_repetitive,
+                            preferred_times=model.preferred_times,
+                            days_to_book_in_advance=model.days_to_book_in_advance,
+                            number_players=model.number_players,
+                            number_holes=model.number_holes,
+                            is_enabled=model.is_enabled,
+                            is_next_run_scheduled=model.is_next_run_scheduled )
+
+    def __convert_models_to_entities__(self, models: List[BookingModel]) -> List[BookingEntity]:
+        entities = []
+        for model in models:
+            entities.append(self.__convert_model_to_entity__(model))
+
+        return entities
