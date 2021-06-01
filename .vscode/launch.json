@@ -1,6 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [
+        
         {
             "name": "Python: Current File",
             "type": "python",
@@ -16,25 +17,25 @@
             "preLaunchTask": "func: host start"
         },
         {
-            "name": "Attach to Python Function: BookingScheduler",
+            "name": "Attach to Python Function: booking_scheduler",
             "type": "python",
             "request": "attach",
             "port": 9091,
-            "preLaunchTask": "func: host start --functions BookingScheduler"
+            "preLaunchTask": "func: host start --functions booking_scheduler"
         },
         {
-            "name": "Attach to Python Function: GolfNowTeeTimeBooker",
+            "name": "Attach to Python Function: golfnow_teetimebooker",
             "type": "python",
             "request": "attach",
             "port": 9091,
-            "preLaunchTask": "func: host start --functions GolfNowTeeTimeBooker"
+            "preLaunchTask": "func: host start --functions golfnow_teetimebooker"
         },
         {
-            "name": "Attach to Python Function: SmithTeeTimeBooker",
+            "name": "Attach to Python Function: smith_teetimebooker",
             "type": "python",
             "request": "attach",
             "port": 9091,
-            "preLaunchTask": "func: host start --functions SmithTeeTimeBooker"
+            "preLaunchTask": "func: host start --functions smith_teetimebooker"
         },
     ]
 }

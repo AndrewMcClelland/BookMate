@@ -10,21 +10,21 @@
 		},
 		{
 			"type": "func",
-			"command": "host start --functions BookingScheduler",
+			"command": "host start --functions booking_scheduler",
 			"problemMatcher": "$func-python-watch",
 			"isBackground": true,
 			"dependsOn": "pipInstall"
 		},
 		{
 			"type": "func",
-			"command": "host start --functions GolfNowTeeTimeBooker",
+			"command": "host start --functions golfnow_teetimebooker",
 			"problemMatcher": "$func-python-watch",
 			"isBackground": true,
 			"dependsOn": "pipInstall"
 		},
 		{
 			"type": "func",
-			"command": "host start --functions SmithTeeTimeBooker",
+			"command": "host start --functions smith_teetimebooker",
 			"problemMatcher": "$func-python-watch",
 			"isBackground": true,
 			"dependsOn": "pipInstall"
