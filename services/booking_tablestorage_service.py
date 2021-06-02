@@ -26,6 +26,12 @@ class BookingTableStorageService:
 
         return self.__convert_entities_to_models__(entities)
 
+    def set_unscheduled_entity(self, model: BookingModel) -> None:
+        entity = self.__convert_model_to_entity__(model)
+        entity.is_next_run_scheduled = False
+
+        self.booking_table_repository.insert_entity(self.table_name, entity)
+
     def set_scheduled_entities(self, models: List[BookingModel]) -> None:
         entities = self.__convert_models_to_entities__(models)
 
@@ -34,8 +40,12 @@ class BookingTableStorageService:
 
         self.booking_table_repository.insert_entities(self.table_name, entities)
 
+    def delete_booking_entity(self, model: BookingModel) -> None:
+        entity = self.__convert_model_to_entity__(model)
+        self.booking_table_repository.delete_entity(self.table_name, entity)
+
     def __convert_entity_to_model__(self, entity: BookingEntity) -> BookingModel:
-        return BookingModel(booker_workload=BookerWorkload[entity.booker_workload],
+        return BookingModel(booker_workload=BookerWorkload(entity.booker_workload),
                             username=entity.username,
                             cron_schedule=entity.cron_schedule,
                             is_repetitive=entity.is_repetitive,
@@ -54,7 +64,7 @@ class BookingTableStorageService:
         return models
 
     def __convert_model_to_entity__(self, model: BookingModel) -> BookingEntity:
-        return BookingEntity(booker_workload=model.booker_workload.name,
+        return BookingEntity(booker_workload=model.booker_workload.value,
                             username=model.username,
                             cron_schedule=model.cron_schedule,
                             is_repetitive=model.is_repetitive,

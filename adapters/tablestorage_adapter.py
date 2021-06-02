@@ -67,6 +67,31 @@ class TableStorageAdapter:
         if batch_count > 0:
             self.table_service.commit_batch(table_name, batch)
 
+    def delete_entity(self, table_name: str, entity: Entity) -> None:
+        if not entity:
+            raise ValueError("`entity` is 'None' or empty.")
+
+        self.table_service.delete_entity(table_name, entity.PartitionKey, entity.RowKey)
+
+    def delete_entities(self, table_name: str, entities: List[Entity]) -> None:
+        if not entities:
+            raise ValueError("`entities` is 'None' or empty.")
+
+        batch = TableBatch()
+        batch_count = 0
+
+        for entity in entities:
+            batch.delete_entity(entity.PartitionKey, entity.RowKey)
+            batch_count += 1
+
+            if batch_count > MAX_BATCH_SIZE:
+                self.table_service.commit_batch(table_name, batch)
+                batch_count = 0
+                batch = TableBatch()
+
+        if batch_count > 0:
+            self.table_service.commit_batch(table_name, batch)
+
     def __combine_filter_queries__(self, *filter_queries: str) -> str:
         result = ""
 
