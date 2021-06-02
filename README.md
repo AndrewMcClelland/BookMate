@@ -21,7 +21,7 @@
 - [x] Use APIs instead of Selenium
 - [ ] Tests
 - [ ] Ability to skip certain days/weeks/ranges
-- [ ] Allow multiple people to enter info for bookings (GolfNowBooker is HttpTrigger by some other continuous job?)
+- [x] Allow multiple people to enter info for bookings (GolfNowBooker is HttpTrigger by some other continuous job?)
 - [ ] Use GitHub planner for roadmap
 - [ ] Roadmap of different booking services to support (GolfNow, VTGolf, TeeOff, SupremeGolf,)
 - [x] Pull all user booking configurations from storage via timer trigger function, and enqueue with time delay on appropriate ServiceBus Topic Subscription for appropriate Booking workload azure function to consume
