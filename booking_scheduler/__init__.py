@@ -34,7 +34,7 @@ def main(mytimer: func.TimerRequest) -> None:
 
     booking_table_storage_service = BookingTableStorageService(table_storage_adapter)
 
-    booking_topic = ServiceBusTopicAdapter(connection_string=os.environ["AzureServiceBus_BookingTopic_ConnectionString_Send"],
+    booking_topic_adapter = ServiceBusTopicAdapter(connection_string=os.environ["AzureServiceBus_BookingTopic_ConnectionString_Send"],
                                           topic_name="bookingtopic")
 
     try:
@@ -42,10 +42,10 @@ def main(mytimer: func.TimerRequest) -> None:
         booking_entities = booking_table_storage_service.get_enabled_unscheduled_booking_entities()
 
         for booking_entity in booking_entities:
-            message_properties = {"BookerWorkload": booking_entity.booker_workload.name}
+            message_properties = {"BookerWorkload": booking_entity.booker_workload.value}
             cron = croniter(booking_entity.cron_schedule)
             enqueue_time = cron.get_next(datetime)
-            booking_topic.send_message(booking_entity, message_properties, enqueue_time)
+            booking_topic_adapter.send_message(booking_entity, message_properties, enqueue_time)
 
         # Mark entities as scheduled to run so that next time BookingScheduler runs it doesn't try to queue same booking again
         if booking_entities:
