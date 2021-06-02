@@ -1,7 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [
-        
+
         {
             "name": "Python: Current File",
             "type": "python",
@@ -36,6 +36,13 @@
             "request": "attach",
             "port": 9091,
             "preLaunchTask": "func: host start --functions smith_teetimebooker"
+        },
+        {
+            "name": "Attach to Python Function: cleanup_action",
+            "type": "python",
+            "request": "attach",
+            "port": 9091,
+            "preLaunchTask": "func: host start --functions cleanup_action"
         },
     ]
 }
