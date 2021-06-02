@@ -1,6 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": "Python: Current File",
             "type": "python",
@@ -9,11 +10,39 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "Attach to Python Functions",
+            "name": "Attach to ALL Python Functions",
             "type": "python",
             "request": "attach",
             "port": 9091,
             "preLaunchTask": "func: host start"
-        }
+        },
+        {
+            "name": "Attach to Python Function: booking_scheduler",
+            "type": "python",
+            "request": "attach",
+            "port": 9091,
+            "preLaunchTask": "func: host start --functions booking_scheduler"
+        },
+        {
+            "name": "Attach to Python Function: golfnow_teetimebooker",
+            "type": "python",
+            "request": "attach",
+            "port": 9091,
+            "preLaunchTask": "func: host start --functions golfnow_teetimebooker"
+        },
+        {
+            "name": "Attach to Python Function: smith_teetimebooker",
+            "type": "python",
+            "request": "attach",
+            "port": 9091,
+            "preLaunchTask": "func: host start --functions smith_teetimebooker"
+        },
+        {
+            "name": "Attach to Python Function: cleanup_action",
+            "type": "python",
+            "request": "attach",
+            "port": 9091,
+            "preLaunchTask": "func: host start --functions cleanup_action"
+        },
     ]
 }

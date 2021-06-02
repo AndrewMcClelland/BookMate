@@ -1,0 +1,14 @@
+{
+  "scriptFile": "__init__.py",
+  "entryPoint": "main",
+  "bindings": [
+    {
+      "name": "message",
+      "type": "serviceBusTrigger",
+      "direction": "in",
+      "topicName": "bookingtopic",
+      "subscriptionName": "HSmithRichardson",
+      "connection": "AzureServiceBus_BookingTopic_ConnectionString_Listen"
+    }
+  ]
+}

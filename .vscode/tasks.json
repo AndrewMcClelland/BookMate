@@ -9,16 +9,44 @@
 			"dependsOn": "pipInstall"
 		},
 		{
+			"type": "func",
+			"command": "host start --functions booking_scheduler",
+			"problemMatcher": "$func-python-watch",
+			"isBackground": true,
+			"dependsOn": "pipInstall"
+		},
+		{
+			"type": "func",
+			"command": "host start --functions golfnow_teetimebooker",
+			"problemMatcher": "$func-python-watch",
+			"isBackground": true,
+			"dependsOn": "pipInstall"
+		},
+		{
+			"type": "func",
+			"command": "host start --functions smith_teetimebooker",
+			"problemMatcher": "$func-python-watch",
+			"isBackground": true,
+			"dependsOn": "pipInstall"
+		},
+		{
+			"type": "func",
+			"command": "host start --functions cleanup_action",
+			"problemMatcher": "$func-python-watch",
+			"isBackground": true,
+			"dependsOn": "pipInstall"
+		},
+		{
 			"label": "pipInstall",
 			"type": "shell",
 			"osx": {
-				"command": "${config:azureFunctions.pythonVenv}/bin/python -m pip install -r requirements.txt"
+				"command": "${config:azureFunctions.pythonVenv}/bin/python -m pip install --upgrade pip && ${config:azureFunctions.pythonVenv}/bin/python -m pip install -r requirements.txt"
 			},
 			"windows": {
-				"command": "${config:azureFunctions.pythonVenv}\\Scripts\\python -m pip install -r requirements.txt"
+				"command": "${config:azureFunctions.pythonVenv}\\Scripts\\python -m pip install --upgrade pip && ${config:azureFunctions.pythonVenv}\\Scripts\\python -m pip install -r requirements.txt"
 			},
 			"linux": {
-				"command": "${config:azureFunctions.pythonVenv}/bin/python -m pip install -r requirements.txt"
+				"command": "${config:azureFunctions.pythonVenv}\\Scripts\\python -m pip install --upgrade pip && ${config:azureFunctions.pythonVenv}/bin/python -m pip install -r requirements.txt"
 			},
 			"problemMatcher": []
 		}

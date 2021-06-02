@@ -2,7 +2,7 @@
 
 name: CI/CD - Dev
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
@@ -21,6 +21,21 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     environment: dev
+    strategy:
+      matrix:
+        include:
+          - azure-functionapp-name: 'bookingscheduler-fa-dev'
+            azure-functionapp-package-path: './smith_teetimebooker'
+            azure-functionapp-package-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_BOOKINGSCHEDULER_DEV }}
+          - azure-functionapp-name: 'teetimebooker-fa-dev'
+            azure-functionapp-package-path: './golfnow_teetimebooker'
+            azure-functionapp-package-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_GOLFNOWTEETIMEBOOKER_DEV }}
+          - azure-functionapp-name: 'teetimebooker-fa-dev'
+            azure-functionapp-package-path: './smith_teetimebooker'
+            azure-functionapp-package-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_SMITHTEETIMEBOOKER_DEV }}
+          - azure-functionapp-name: 'actions-fa-dev'
+            azure-functionapp-package-path: './cleanup_action'
+            azure-functionapp-package-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_CLEANUPACTION_DEV }}
     steps:
     - name: 'Checkout GitHub Action'
       uses: actions/checkout@master
@@ -42,9 +57,9 @@ jobs:
       uses: Azure/functions-action@v1
       id: fa
       with:
-        app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
-        package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-        publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+        app-name: ${{ matrix.azure-functionapp-name }}
+        package: ${{ matrix.azure-functionapp-package-path }}
+        publish-profile: ${{ matrix.azure-functionapp-package-profile }}
         # Enabled last two app settings two execute remote-buiild to support chromedriver
         # https://github.com/marketplace/actions/azure-functions-action
         # https://docs.microsoft.com/en-us/azure/azure-functions/functions-deployment-technologies#remote-build
