@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32505.426
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookMate.Core.Api", "BookMate.Core.Api\BookMate.Core.Api.csproj", "{4FC3B961-DFBD-4F95-B849-E5A2847228ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookMate.Core.Api.Tests.Unit", "BookMate.Core.Api.Tests.Unit\BookMate.Core.Api.Tests.Unit.csproj", "{33B7ACA1-0246-4889-9E83-C73B418EEE3B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4FC3B961-DFBD-4F95-B849-E5A2847228ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FC3B961-DFBD-4F95-B849-E5A2847228ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FC3B961-DFBD-4F95-B849-E5A2847228ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FC3B961-DFBD-4F95-B849-E5A2847228ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33B7ACA1-0246-4889-9E83-C73B418EEE3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33B7ACA1-0246-4889-9E83-C73B418EEE3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33B7ACA1-0246-4889-9E83-C73B418EEE3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33B7ACA1-0246-4889-9E83-C73B418EEE3B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A2E3C71D-B19A-4908-ACF2-86219A4B5045}
+	EndGlobalSection
+EndGlobal
