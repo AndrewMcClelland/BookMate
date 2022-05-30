@@ -1,3 +1,7 @@
+// -----------------------------------
+// Copyright (c) Andrew McClelland.
+// -----------------------------------
+
 using Xunit;
 
 namespace BookMate.Core.Api.Tests.Unit

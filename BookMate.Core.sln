@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32505.426
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookMate.Core.Api", "BookMate.Core.Api\BookMate.Core.Api.csproj", "{4FC3B961-DFBD-4F95-B849-E5A2847228ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookMate.Core.Api", "BookMate.Core.Api\BookMate.Core.Api.csproj", "{4FC3B961-DFBD-4F95-B849-E5A2847228ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookMate.Core.Api.Tests.Unit", "BookMate.Core.Api.Tests.Unit\BookMate.Core.Api.Tests.Unit.csproj", "{33B7ACA1-0246-4889-9E83-C73B418EEE3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookMate.Core.Api.Tests.Unit", "BookMate.Core.Api.Tests.Unit\BookMate.Core.Api.Tests.Unit.csproj", "{33B7ACA1-0246-4889-9E83-C73B418EEE3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookMate.Core.Api.Tests.Acceptance", "BookMate.Core.Api.Tests.Acceptance\BookMate.Core.Api.Tests.Acceptance.csproj", "{BE7BA836-0236-4D66-BEBE-664D9849CD04}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{33B7ACA1-0246-4889-9E83-C73B418EEE3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33B7ACA1-0246-4889-9E83-C73B418EEE3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33B7ACA1-0246-4889-9E83-C73B418EEE3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE7BA836-0236-4D66-BEBE-664D9849CD04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE7BA836-0236-4D66-BEBE-664D9849CD04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE7BA836-0236-4D66-BEBE-664D9849CD04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE7BA836-0236-4D66-BEBE-664D9849CD04}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
