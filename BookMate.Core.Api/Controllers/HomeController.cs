@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿// -----------------------------------
+// Copyright (c) Andrew McClelland.
+// -----------------------------------
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookMate.Core.Api.Controllers
