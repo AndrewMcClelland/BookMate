@@ -2,8 +2,6 @@
 // Copyright (c) Andrew McClelland.
 // -----------------------------------
 
-using System;
-
 namespace BookMate.Core.Api.Models.Externals.ForeUpSoftware
 {
     public class ExternalForeUpSoftwareBookingCriteria
