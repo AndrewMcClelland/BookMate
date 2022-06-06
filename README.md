@@ -1,20 +1,6 @@
-# TeeTimeBooker
+# BookMate
 
-## To-Do
-- [x] Deployed to Azure and working
-- [x] ConfigurationManager for PReferredTeeTimes and Smith Golf search settings
-- [ ] Feature flag to enable booking or not
-- [ ] Better error handling
-- [x] Load AppSettings from KeyVault
-- [x] Logging
-- [ ] Break into multiple functions
-- [ ] Deploy AppSettings as ARM
-- [ ] Local script that levergaes same Helper Classes
-- [ ] Local and deployed instructions
-- [ ] Better way for preferred tee times
-- [ ] Dev & master branches
-- [ ] dev and prod environments & pipelines
-- [ ] Better directory structure
-- [ ] Make Public repo
-- [ ] GolfNow adapter?? Use APIs instead of Selenium
-- [ ] Tests?
+[![Build: main](https://github.com/AndrewMcClelland/BookMate/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/AndrewMcClelland/BookMate/actions/workflows/build.yml?query=branch%3Amain)
+[![The Standard - COMPLIANT](https://img.shields.io/badge/The_Standard-COMPLIANT-2ea44f)](https://github.com/hassanhabib/The-Standard)
+
+This is an end-to-end automated booking application used to automate the cumberson booking process of golf tee times, restaurant reservations, and more.
