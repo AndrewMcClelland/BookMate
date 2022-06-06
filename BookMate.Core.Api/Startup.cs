@@ -3,6 +3,9 @@
 // -----------------------------------
 
 using System.Text.Json.Serialization;
+using BookMate.Core.Api.Brokers.BookingSystems.ForeUpSoftwareBookingSystems;
+using BookMate.Core.Api.Brokers.Loggings;
+using BookMate.Core.Api.Services.Foundations.ForeUpSoftware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -20,11 +23,13 @@ namespace BookMate.Core.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers().AddJsonOptions(options =>
-                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-
             services.AddHttpClient();
             services.AddLogging();
+            AddBrokers(services);
+            AddServices(services);
+
+            services.AddControllers().AddJsonOptions(options =>
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
             services.AddSwaggerGen(c =>
             {
@@ -57,6 +62,17 @@ namespace BookMate.Core.Api
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
+        }
+
+        private static void AddBrokers(IServiceCollection services)
+        {
+            services.AddTransient<ILoggingBroker, LoggingBroker>();
+            services.AddTransient<IForeUpSoftwareBookingSystemBroker, ForeUpSoftwareBookingSystemBroker>();
+        }
+
+        private static void AddServices(IServiceCollection services)
+        {
+            services.AddTransient<IForeUpSoftwareService, ForeUpSoftwareService>();
         }
     }
 }
