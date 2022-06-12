@@ -28,8 +28,9 @@ namespace BookMate.Core.Api.Tests.Unit.Services.Foundations
                 new TeeTimeDependencyException(failedTeeTimeDependencyException);
 
             this.foreUpSoftwareBookingSystemBrokerMock.Setup(broker =>
-                broker.GetAvailableTeeTimes(It.IsAny<ExternalForeUpSoftwareBookingCriteria>()))
-                    .ThrowsAsync(criticalDependencyException);
+                broker.GetAvailableTeeTimes(
+                    It.IsAny<ExternalForeUpSoftwareBookingCriteria>()))
+                        .ThrowsAsync(criticalDependencyException);
 
             // when
             ValueTask<List<TeeTime>> retrieveAllTeeTimes =
@@ -69,8 +70,9 @@ namespace BookMate.Core.Api.Tests.Unit.Services.Foundations
                 new TeeTimeDependencyException(failedTeeTimeDependencyException);
 
             this.foreUpSoftwareBookingSystemBrokerMock.Setup(broker =>
-                broker.GetAvailableTeeTimes(It.IsAny<ExternalForeUpSoftwareBookingCriteria>()))
-                    .ThrowsAsync(httpResponseException);
+                broker.GetAvailableTeeTimes(
+                    It.IsAny<ExternalForeUpSoftwareBookingCriteria>()))
+                        .ThrowsAsync(httpResponseException);
 
             // when
             ValueTask<List<TeeTime>> retrieveAllTeeTimes =
@@ -89,6 +91,46 @@ namespace BookMate.Core.Api.Tests.Unit.Services.Foundations
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogError(It.Is(SameExceptionAs(
                     expectedTeeTimeDependencyException))),
+                        Times.Once);
+
+            this.foreUpSoftwareBookingSystemBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ShouldThrowServiceExceptionOnRetrieveIfErrorOccursAndLogItAsync()
+        {
+            // given
+            var serviceException = new Exception();
+
+            var failedTeeTimeServiceException =
+                new FailedTeeTimeServiceException(serviceException);
+
+            var expectedTeeTimeServiceException =
+                new TeeTimeServiceException(failedTeeTimeServiceException);
+
+            this.foreUpSoftwareBookingSystemBrokerMock.Setup(broker =>
+                broker.GetAvailableTeeTimes(
+                    It.IsAny<ExternalForeUpSoftwareBookingCriteria>()))
+                        .ThrowsAsync(serviceException);
+
+            // when
+            ValueTask<List<TeeTime>> retrieveAllTeeTimes =
+                this.foreUpSoftwareService.RetrieveAllAvailableTeeTimesAsync(
+                    new ForeUpSoftwareTeeTimeSearchCriteria());
+
+            // then
+            await Assert.ThrowsAsync<TeeTimeServiceException>(() =>
+                retrieveAllTeeTimes.AsTask());
+
+            this.foreUpSoftwareBookingSystemBrokerMock.Verify(broker =>
+                broker.GetAvailableTeeTimes(
+                    It.IsAny<ExternalForeUpSoftwareBookingCriteria>()),
+                        Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(
+                    expectedTeeTimeServiceException))),
                         Times.Once);
 
             this.foreUpSoftwareBookingSystemBrokerMock.VerifyNoOtherCalls();
