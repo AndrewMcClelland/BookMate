@@ -19,7 +19,7 @@ namespace BookMate.Core.Api.Tests.Unit.Services.Foundations
             // given
             List<dynamic> randomTeeTimeProperties = CreateRandomTeeTimeProperties();
 
-            List<ExternalForeUpSoftwareTeeTime> randomExternalForeUpSoftwareTeeTime = 
+            List<ExternalForeUpSoftwareTeeTime> randomExternalForeUpSoftwareTeeTime =
                 randomTeeTimeProperties.Select(item =>
                 {
                     return new ExternalForeUpSoftwareTeeTime
@@ -31,7 +31,6 @@ namespace BookMate.Core.Api.Tests.Unit.Services.Foundations
                         GreenFee = item.GreenFee
                     };
                 }).ToList();
-
 
             List<TeeTime> randomTeeTimes = randomTeeTimeProperties.Select(item =>
             {
@@ -45,13 +44,13 @@ namespace BookMate.Core.Api.Tests.Unit.Services.Foundations
                 };
             }).ToList();
 
-            List<ExternalForeUpSoftwareTeeTime> retrievedExternalForeUpSoftwareTeeTimes = 
+            List<ExternalForeUpSoftwareTeeTime> retrievedExternalForeUpSoftwareTeeTimes =
                 randomExternalForeUpSoftwareTeeTime;
 
             List<TeeTime> expectedTeeTimes = randomTeeTimes;
 
             dynamic randomBookingCriteriaProperties = CreateRandomBookingCriteriaProperties();
-            
+
             var foreUpSoftwareBookingCriteria = new ForeUpSoftwareTeeTimeSearchCriteria
             {
                 CourseId = randomBookingCriteriaProperties.CourseId,
@@ -78,7 +77,7 @@ namespace BookMate.Core.Api.Tests.Unit.Services.Foundations
                         .ReturnsAsync(retrievedExternalForeUpSoftwareTeeTimes);
 
             // when
-            List<TeeTime> actualTeeTimes = 
+            List<TeeTime> actualTeeTimes =
                 await this.foreUpSoftwareService.RetrieveAllAvailableTeeTimesAsync(foreUpSoftwareBookingCriteria);
 
             // then

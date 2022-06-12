@@ -98,7 +98,7 @@ namespace BookMate.Core.Api.Tests.Unit.Services.Foundations
         private static (DateTimeOffset, string) GetRandomTeeTimeDateTime()
         {
             var randomDateRaw = DateTimeOffset.Now.AddDays(new Random().Next(1000));
-            
+
             var randomDate = new DateTimeOffset(
                 randomDateRaw.Year,
                 randomDateRaw.Month,
