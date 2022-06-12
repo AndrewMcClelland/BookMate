@@ -32,18 +32,19 @@ namespace BookMate.Core.Api.Services.Foundations.ForeUpSoftware
                 CourseId = teeTimeSearchCriteria.CourseId,
                 Date = teeTimeSearchCriteria.Date.Date.ToString("MM-dd-yyyy"),
                 Time = "all",
-                Holes = GetForeUpSoftwareHoles(teeTimeSearchCriteria),
-                Players = GetForeUpSoftwarePlayers(teeTimeSearchCriteria),
+                Holes = GetForeUpSoftwareSearchHoles(teeTimeSearchCriteria),
+                Players = GetForeUpSoftwareSearchPlayers(teeTimeSearchCriteria),
                 BookingClass = teeTimeSearchCriteria.BookingClass,
                 SpecialsOnly = "0",
             };
 
-            List<ExternalForeUpSoftwareTeeTime> externalForeUpSoftwareTeeTimes = await this.foreUpSoftwareBookingSystemBroker.GetAvailableTeeTimes(externalForeUpSoftwareBookingCriteria);
+            List<ExternalForeUpSoftwareTeeTime> externalForeUpSoftwareTeeTimes = 
+                await this.foreUpSoftwareBookingSystemBroker.GetAvailableTeeTimes(externalForeUpSoftwareBookingCriteria);
 
             return externalForeUpSoftwareTeeTimes.Select(AsTeeTime).ToList();
         }
 
-        private static string GetForeUpSoftwareHoles(TeeTimeSearchCriteria teeTimeSearchCriteria)
+        private static string GetForeUpSoftwareSearchHoles(TeeTimeSearchCriteria teeTimeSearchCriteria)
         {
             return teeTimeSearchCriteria.Holes switch
             {
@@ -53,7 +54,7 @@ namespace BookMate.Core.Api.Services.Foundations.ForeUpSoftware
             };
         }
 
-        private static string GetForeUpSoftwarePlayers(TeeTimeSearchCriteria teeTimeSearchCriteria)
+        private static string GetForeUpSoftwareSearchPlayers(TeeTimeSearchCriteria teeTimeSearchCriteria)
         {
             return teeTimeSearchCriteria.Players switch
             {
@@ -71,10 +72,19 @@ namespace BookMate.Core.Api.Services.Foundations.ForeUpSoftware
             {
                 CourseName = externalForeUpSoftwareTeeTime.CourseName,
                 DateTime = DateTimeOffset.Parse(externalForeUpSoftwareTeeTime.Time),
-                Holes = Int32.Parse(externalForeUpSoftwareTeeTime.Holes),
+                Holes = GetForeUpSoftwareTeeTimeHoles(externalForeUpSoftwareTeeTime.Holes),
                 Players = externalForeUpSoftwareTeeTime.AvailableSpots,
                 Cost = externalForeUpSoftwareTeeTime.GreenFee,
             };
         };
+        private static TeeTimeHoles GetForeUpSoftwareTeeTimeHoles(string holes)
+        {
+            return holes switch
+            {
+                "9" => TeeTimeHoles.Nine,
+                "18" => TeeTimeHoles.Eighteen,
+                _ => TeeTimeHoles.Any,
+            };
+        }
     }
 }
