@@ -109,29 +109,29 @@ namespace BookMate.Core.Api.Models.Externals.ForeUpSoftware
         [JsonProperty("pay_online")]
         public string PayOnline { get; set; }
         [JsonProperty("green_fee")]
-        public int GreenFee { get; set; }
+        public double GreenFee { get; set; }
         [JsonProperty("green_fee_9")]
-        public int GreenFee9 { get; set; }
+        public double GreenFee9 { get; set; }
         [JsonProperty("green_fee_18")]
-        public int GreenFee18 { get; set; }
+        public double GreenFee18 { get; set; }
         [JsonProperty("guest_green_fee")]
-        public int GuestGreenFee { get; set; }
+        public double GuestGreenFee { get; set; }
         [JsonProperty("guest_green_fee_9")]
-        public int GuestGreenFee9 { get; set; }
+        public double GuestGreenFee9 { get; set; }
         [JsonProperty("guest_green_fee_18")]
-        public int GuestGreenFee18 { get; set; }
+        public double GuestGreenFee18 { get; set; }
         [JsonProperty("cart_fee")]
-        public int CartFee { get; set; }
+        public double CartFee { get; set; }
         [JsonProperty("cart_fee_9")]
-        public int CartFee9 { get; set; }
+        public double CartFee9 { get; set; }
         [JsonProperty("cart_fee_18")]
-        public int CartFee18 { get; set; }
+        public double CartFee18 { get; set; }
         [JsonProperty("guest_cart_fee")]
-        public int GuestCartFee { get; set; }
+        public double GuestCartFee { get; set; }
         [JsonProperty("guest_cart_fee_9")]
-        public int GuestCartFee9 { get; set; }
+        public double GuestCartFee9 { get; set; }
         [JsonProperty("guest_cart_fee_18")]
-        public int GuestCartFee18 { get; set; }
+        public double GuestCartFee18 { get; set; }
         [JsonProperty("rate_type")]
         public string RateType { get; set; }
     }
