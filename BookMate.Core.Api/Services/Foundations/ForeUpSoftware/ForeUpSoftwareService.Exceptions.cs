@@ -2,6 +2,7 @@
 // Copyright (c) Andrew McClelland.
 // -----------------------------------
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BookMate.Core.Api.Models.TeeTimes;
@@ -48,6 +49,13 @@ namespace BookMate.Core.Api.Services.Foundations.ForeUpSoftware
 
                 throw CreateAndLogErrorDependencyException(failedTeeTimeDependencyException);
             }
+            catch (Exception exception)
+            {
+                var failedTeeTimeServiceException =
+                    new FailedTeeTimeServiceException(exception);
+
+                throw CreateAndLogErrorServiceException(failedTeeTimeServiceException);
+            }
         }
 
         private TeeTimeDependencyException CreateAndLogCriticalDependencyException(
@@ -66,6 +74,15 @@ namespace BookMate.Core.Api.Services.Foundations.ForeUpSoftware
             this.loggingBroker.LogError(teeTimeDependencyException);
 
             return teeTimeDependencyException;
+        }
+
+        private TeeTimeServiceException CreateAndLogErrorServiceException(
+            FailedTeeTimeServiceException failedTeeTimeServiceException)
+        {
+            var teeTimeServiceException = new TeeTimeServiceException(failedTeeTimeServiceException);
+            this.loggingBroker.LogError(teeTimeServiceException);
+
+            return teeTimeServiceException;
         }
     }
 }
