@@ -25,7 +25,8 @@ namespace BookMate.Core.Api.Services.Foundations.ForeUpSoftware
             this.loggingBroker = loggingBroker;
         }
 
-        public async ValueTask<List<TeeTime>> RetrieveAllAvailableTeeTimesAsync(ForeUpSoftwareTeeTimeSearchCriteria teeTimeSearchCriteria)
+        public ValueTask<List<TeeTime>> RetrieveAllAvailableTeeTimesAsync(ForeUpSoftwareTeeTimeSearchCriteria teeTimeSearchCriteria) =>
+        TryCatch(async () =>
         {
             var externalForeUpSoftwareBookingCriteria = new ExternalForeUpSoftwareBookingCriteria
             {
@@ -38,11 +39,11 @@ namespace BookMate.Core.Api.Services.Foundations.ForeUpSoftware
                 SpecialsOnly = "0",
             };
 
-            List<ExternalForeUpSoftwareTeeTime> externalForeUpSoftwareTeeTimes = 
+            List<ExternalForeUpSoftwareTeeTime> externalForeUpSoftwareTeeTimes =
                 await this.foreUpSoftwareBookingSystemBroker.GetAvailableTeeTimes(externalForeUpSoftwareBookingCriteria);
 
             return externalForeUpSoftwareTeeTimes.Select(AsTeeTime).ToList();
-        }
+        });
 
         private static string GetForeUpSoftwareSearchHoles(TeeTimeSearchCriteria teeTimeSearchCriteria)
         {
