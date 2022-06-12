@@ -41,6 +41,13 @@ namespace BookMate.Core.Api.Services.Foundations.ForeUpSoftware
 
                 throw CreateAndLogCriticalDependencyException(failedTeeTimeDependencyException);
             }
+            catch (HttpResponseException httpResponseException)
+            {
+                var failedTeeTimeDependencyException =
+                    new FailedTeeTimeDependencyException(httpResponseException);
+
+                throw CreateAndLogErrorDependencyException(failedTeeTimeDependencyException);
+            }
         }
 
         private TeeTimeDependencyException CreateAndLogCriticalDependencyException(
@@ -48,6 +55,15 @@ namespace BookMate.Core.Api.Services.Foundations.ForeUpSoftware
         {
             var teeTimeDependencyException = new TeeTimeDependencyException(failedTeeTimeDependencyException);
             this.loggingBroker.LogCritical(teeTimeDependencyException);
+
+            return teeTimeDependencyException;
+        }
+
+        private TeeTimeDependencyException CreateAndLogErrorDependencyException(
+            FailedTeeTimeDependencyException failedTeeTimeDependencyException)
+        {
+            var teeTimeDependencyException = new TeeTimeDependencyException(failedTeeTimeDependencyException);
+            this.loggingBroker.LogError(teeTimeDependencyException);
 
             return teeTimeDependencyException;
         }
