@@ -10,7 +10,10 @@ using BookMate.Core.Api.Models.TeeTimes;
 using BookMate.Core.Api.Services.Foundations.ForeUpSoftware;
 using KellermanSoftware.CompareNetObjects;
 using Moq;
+using RESTFulSense.Exceptions;
 using Tynamix.ObjectFiller;
+using Xeptions;
+using Xunit;
 
 namespace BookMate.Core.Api.Tests.Unit.Services.Foundations
 {
@@ -31,6 +34,22 @@ namespace BookMate.Core.Api.Tests.Unit.Services.Foundations
                 foreUpSoftwareBookingSystemBroker: this.foreUpSoftwareBookingSystemBrokerMock.Object,
                 loggingBroker: this.loggingBrokerMock.Object);
         }
+
+        public static TheoryData CriticalDependencyException()
+        {
+            string someMessage = GetRandomString();
+            var someResponseMessage = new HttpResponseMessage();
+
+            return new TheoryData<Xeption>()
+            {
+                new HttpResponseUrlNotFoundException(someResponseMessage, someMessage),
+                new HttpResponseUnauthorizedException(someResponseMessage, someMessage),
+                new HttpResponseForbiddenException(someResponseMessage, someMessage)
+            };
+        }
+
+        private static Expression<Func<Xeption, bool>> SameExceptionAs(Xeption expectedException) =>
+            actualException => actualException.SameExceptionAs(expectedException);
 
         private static List<dynamic> CreateRandomTeeTimeProperties()
         {
