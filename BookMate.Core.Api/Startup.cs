@@ -5,6 +5,7 @@
 using System.Text.Json.Serialization;
 using BookMate.Core.Api.Brokers.BookingSystems.ForeUpSoftwareBookingSystems;
 using BookMate.Core.Api.Brokers.Loggings;
+using BookMate.Core.Api.Brokers.Notifications;
 using BookMate.Core.Api.Services.Foundations.ForeUpSoftware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -68,6 +69,7 @@ namespace BookMate.Core.Api
         {
             services.AddTransient<ILoggingBroker, LoggingBroker>();
             services.AddTransient<IForeUpSoftwareBookingSystemBroker, ForeUpSoftwareBookingSystemBroker>();
+            services.AddTransient<INotificationBroker, NotificationBroker>();
         }
 
         private static void AddServices(IServiceCollection services)
