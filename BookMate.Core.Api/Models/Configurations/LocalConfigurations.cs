@@ -10,5 +10,6 @@ namespace BookMate.Core.Api.Models.Configurations
     {
         public IDictionary<string, BookingSystems> BookingSystems { get; set; }
         public TwilioConfiguration TwilioConfiguration { get; set; }
+        public string UserAgent { get; set; }
     }
 }

@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookMate.Core.Api", "BookMa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookMate.Core.Api.Tests.Unit", "BookMate.Core.Api.Tests.Unit\BookMate.Core.Api.Tests.Unit.csproj", "{33B7ACA1-0246-4889-9E83-C73B418EEE3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookMate.Core.Api.Tests.Acceptance", "BookMate.Core.Api.Tests.Acceptance\BookMate.Core.Api.Tests.Acceptance.csproj", "{BE7BA836-0236-4D66-BEBE-664D9849CD04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookMate.Core.Api.Tests.Acceptance", "BookMate.Core.Api.Tests.Acceptance\BookMate.Core.Api.Tests.Acceptance.csproj", "{BE7BA836-0236-4D66-BEBE-664D9849CD04}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
