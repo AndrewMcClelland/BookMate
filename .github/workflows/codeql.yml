@@ -32,8 +32,8 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 7.0.100-preview.4.22252.9
-        include-prerelease: true
+        dotnet-version: 7.0.102
+        include-prerelease: false
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
