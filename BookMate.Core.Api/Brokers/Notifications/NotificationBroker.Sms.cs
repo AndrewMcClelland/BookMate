@@ -23,8 +23,8 @@ namespace BookMate.Core.Api.Brokers.Notifications
         {
             var messages = new List<MessageResource>();
             MessageResource message;
-            
-            foreach(string toNumber in toNumbers)
+
+            foreach (string toNumber in toNumbers)
             {
                 message = this.SendSms(
                     smsBody,
@@ -34,7 +34,7 @@ namespace BookMate.Core.Api.Brokers.Notifications
 
                 messages.Add(message);
             }
-            
+
             return messages;
         }
     }
