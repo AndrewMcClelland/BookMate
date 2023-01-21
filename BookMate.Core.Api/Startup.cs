@@ -3,10 +3,17 @@
 // -----------------------------------
 
 using System.Text.Json.Serialization;
+using BookMate.Core.Api.Brokers.APIs.OpenTable;
+using BookMate.Core.Api.Brokers.APIs.Resy;
 using BookMate.Core.Api.Brokers.BookingSystems.ForeUpSoftwareBookingSystems;
 using BookMate.Core.Api.Brokers.Loggings;
 using BookMate.Core.Api.Brokers.Notifications;
+using BookMate.Core.Api.Services.Coordinations.Restaurants;
 using BookMate.Core.Api.Services.Foundations.ForeUpSoftware;
+using BookMate.Core.Api.Services.Foundations.OpenTable;
+using BookMate.Core.Api.Services.Foundations.Resy;
+using BookMate.Core.Api.Services.Orchestrations.OpenTable;
+using BookMate.Core.Api.Services.Orchestrations.Resy;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -69,12 +76,19 @@ namespace BookMate.Core.Api
         {
             services.AddTransient<ILoggingBroker, LoggingBroker>();
             services.AddTransient<IForeUpSoftwareBookingSystemBroker, ForeUpSoftwareBookingSystemBroker>();
+            services.AddTransient<IResyApiBroker, ResyApiBroker>();
+            services.AddTransient<IOpenTableApiBroker, OpenTableApiBroker>();
             services.AddTransient<INotificationBroker, NotificationBroker>();
         }
 
         private static void AddServices(IServiceCollection services)
         {
             services.AddTransient<IForeUpSoftwareService, ForeUpSoftwareService>();
+            services.AddTransient<IResyService, ResyService>();
+            services.AddTransient<IOpenTableService, OpenTableService>();
+            services.AddTransient<IResyOrchestrationService, ResyOrchestrationService>();
+            services.AddTransient<IOpenTableOrchestrationService, OpenTableOrchestrationService>();
+            services.AddTransient<IRestaurantCoordinationService, RestaurantCoordinationService>();
         }
     }
 }
